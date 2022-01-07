@@ -21,8 +21,9 @@ public class Conta implements Serializable {
     @Column(name = "cl_numero", nullable = false, unique = true)
     private String numero;
 
-    @Column(name = "cl_agencia", nullable = false, unique = true)
-    private String agencia;
+    @OneToOne
+    @JoinColumn(name = "fk_agencia", nullable = false)
+    private Agencia agencia;
 
     @Column(name = "cl_saldo", nullable = false)
     private double saldo;
@@ -48,15 +49,13 @@ public class Conta implements Serializable {
         status = ContaStatus.of(1);
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
-        this.numero = "123";
-        this.agencia = "123-A";
         this.saldo = 0;
         this.limite = 0;
     }
 
     public ContaFullDTO toDTO() {
         ContaFullDTO contaFullDTO = new ContaFullDTO();
-        contaFullDTO.setAgencia(this.agencia);
+        contaFullDTO.setAgenciaDTO(this.agencia.toDTO());
         contaFullDTO.setCreatedAt(this.createdAt);
         contaFullDTO.setClienteDTO(this.cliente.toDTO());
         contaFullDTO.setUpdatedAt(this.updatedAt);
@@ -66,6 +65,14 @@ public class Conta implements Serializable {
         contaFullDTO.setNumero(this.numero);
         contaFullDTO.setStatus(this.status);
         return contaFullDTO;
+    }
+
+    public Agencia getAgencia() {
+        return agencia;
+    }
+
+    public void setAgencia(Agencia agencia) {
+        this.agencia = agencia;
     }
 
     public Long getId() {
@@ -82,14 +89,6 @@ public class Conta implements Serializable {
 
     public void setNumero(String numero) {
         this.numero = numero;
-    }
-
-    public String getAgencia() {
-        return agencia;
-    }
-
-    public void setAgencia(String agencia) {
-        this.agencia = agencia;
     }
 
     public double getSaldo() {

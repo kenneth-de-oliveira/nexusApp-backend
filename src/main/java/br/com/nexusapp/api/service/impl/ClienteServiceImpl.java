@@ -1,7 +1,6 @@
 package br.com.nexusapp.api.service.impl;
 
 import br.com.nexusapp.api.dtos.ClienteDTO;
-import br.com.nexusapp.api.dtos.EnderecoDTO;
 import br.com.nexusapp.api.exception.ConflictException;
 import br.com.nexusapp.api.exception.NotFoundException;
 import br.com.nexusapp.api.model.Cliente;

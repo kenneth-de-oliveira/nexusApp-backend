@@ -11,7 +11,9 @@ import java.time.LocalDateTime;
 @SequenceGenerator(name = "cliente_endereco_seq", sequenceName = "cliente_endereco_seq", initialValue = 1, allocationSize = 1)
 public class ClienteEndereco implements Serializable {
 
-    @Id
+	private static final long serialVersionUID = 6637135061404803930L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cliente_endereco_seq")
     private Long id;
 
