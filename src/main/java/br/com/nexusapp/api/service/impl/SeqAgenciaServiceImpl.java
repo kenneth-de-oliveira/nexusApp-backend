@@ -1,9 +1,9 @@
 package br.com.nexusapp.api.service.impl;
 
 import br.com.nexusapp.api.model.Cliente;
-import br.com.nexusapp.api.model.SeqConta;
-import br.com.nexusapp.api.repository.SeqContaRepository;
-import br.com.nexusapp.api.service.ISeqContaService;
+import br.com.nexusapp.api.model.SeqAgencia;
+import br.com.nexusapp.api.repository.SeqAgenciaRepository;
+import br.com.nexusapp.api.service.ISeqAgenciaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -13,22 +13,22 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
-public class SeqContaServiceImpl implements ISeqContaService {
+public class SeqAgenciaServiceImpl implements ISeqAgenciaService {
 
-    private static final int QTD_DIGITOS_CONTA = 3;
+    private static final int QTD_DIGITOS_CONTA = 2;
 
-    private static final int QTD_DIGITOS_SEQ_CONTA = 7;
+    private static final int QTD_DIGITOS_SEQ_CONTA = 2;
 
-    private final SeqContaRepository repository;
+    private final SeqAgenciaRepository repository;
 
     @Autowired
-    public SeqContaServiceImpl(SeqContaRepository repository) {
+    public SeqAgenciaServiceImpl(SeqAgenciaRepository repository) {
         this.repository = repository;
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public synchronized String gerarNumeroContaCliente(Cliente cliente) {
+    public synchronized String gerarNumeroAgenciaCliente(Cliente cliente) {
 
         long ano = LocalDate.now().getYear();
         long sequencial = obterCodigoSequencialPorTipo(cliente);
@@ -44,24 +44,24 @@ public class SeqContaServiceImpl implements ISeqContaService {
         long sequencial = 0L;
         long ano = LocalDate.now().getYear();
 
-        SeqConta seqConta = buscaCodigoPorAnoTipo(cliente.getId(), ano);
+        SeqAgencia seqAgencia = buscaCodigoPorAnoTipo(cliente.getId(), ano);
 
-        if (Optional.ofNullable(seqConta).isEmpty() || Optional.ofNullable(seqConta.getId()).isEmpty()) {
-            seqConta = new SeqConta();
-            seqConta.setNrAno(ano);
-            seqConta.setIdCliente(cliente.getId());
+        if (Optional.ofNullable(seqAgencia).isEmpty() || Optional.ofNullable(seqAgencia.getId()).isEmpty()) {
+            seqAgencia = new SeqAgencia();
+            seqAgencia.setNrAno(ano);
+            seqAgencia.setIdConta(cliente.getId());
         } else {
-            sequencial = seqConta.getNrSequencial();
+            sequencial = seqAgencia.getNrSequencial();
         }
 
-        seqConta.setNrSequencial(++sequencial);
+        seqAgencia.setNrSequencial(++sequencial);
 
-        repository.saveAndFlush(seqConta);
+        repository.saveAndFlush(seqAgencia);
 
         return sequencial;
     }
 
-    private SeqConta buscaCodigoPorAnoTipo(Long idConta, Long nrAno) {
+    private SeqAgencia buscaCodigoPorAnoTipo(Long idConta, Long nrAno) {
         return repository.findByIdAndNrAno(idConta, nrAno);
     }
 

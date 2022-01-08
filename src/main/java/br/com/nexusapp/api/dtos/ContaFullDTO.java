@@ -33,7 +33,6 @@ public class ContaFullDTO {
 
     public Conta toModel() {
         Conta conta = new Conta();
-        conta.setCliente(this.clienteDTO.toModel());
         conta.setCreatedAt(this.createdAt);
         conta.setAgencia(this.agencia);
         conta.setUpdatedAt(this.updatedAt);

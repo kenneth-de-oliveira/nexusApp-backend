@@ -1,6 +1,7 @@
 package br.com.nexusapp.api.service.impl;
 
 import br.com.nexusapp.api.dtos.ClienteDTO;
+import br.com.nexusapp.api.dtos.EnderecoDTO;
 import br.com.nexusapp.api.exception.ConflictException;
 import br.com.nexusapp.api.exception.NotFoundException;
 import br.com.nexusapp.api.model.Cliente;
@@ -11,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -31,18 +30,20 @@ public class ClienteServiceImpl implements IClienteService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ClienteDTO cadastrar(ClienteDTO clienteDTO) {
         Optional<Cliente> clienteOpt = repository.findByDocumento(clienteDTO.getDocumento());
         if (clienteOpt.isPresent()) {
             throw new ConflictException(ms.getMessage("cliente.cadastro.erro",
         null, LocaleContextHolder.getLocale()));
         }
+
         var cliente = clienteDTO.toModel();
+
         repository.save(cliente);
+
         return cliente.toFullDTO(enderecoService
-        .cadastrar(cliente.getId(),
-        clienteDTO.getEnderecoDTO()));
+                .cadastrar(cliente.getId(),
+                        clienteDTO.getEnderecoDTO()));
     }
 
     @Override
@@ -52,7 +53,7 @@ public class ClienteServiceImpl implements IClienteService {
             throw new NotFoundException(ms.getMessage("cliente.consulta.erro",
         null, LocaleContextHolder.getLocale()));
         }
-        return clienteOpt.get().toDTO();
+        return getClienteDTO(clienteOpt.get());
     }
 
     @Override
@@ -62,6 +63,16 @@ public class ClienteServiceImpl implements IClienteService {
             throw new NotFoundException(ms.getMessage("cliente.consulta.erro",
         null, LocaleContextHolder.getLocale()));
         }
-        return clienteOpt.get().toDTO();
+        return getClienteDTO(clienteOpt.get());
+    }
+
+    private ClienteDTO getClienteDTO(Cliente cliente) {
+        EnderecoDTO enderecoDTO =buscarEnderecoCliente(cliente.toDTO());
+        enderecoDTO.setIdCliente(cliente.getId());
+        return new ClienteDTO(cliente, enderecoDTO);
+    }
+
+    private EnderecoDTO buscarEnderecoCliente(ClienteDTO clienteDTO) {
+        return enderecoService.buscarDoClientePorId(clienteDTO.getId());
     }
 }

@@ -1,24 +1,23 @@
 package br.com.nexusapp.api.dtos;
 
-import javax.validation.constraints.NotNull;
-
 public class ContaDTO extends ContaFullDTO {
 
-    @NotNull
-    private Long idCliente;
+    @Override
+    public ClienteDTO getClienteDTO() {
+        return clienteDTO;
+    }
+
+    @Override
+    public void setClienteDTO(ClienteDTO clienteDTO) {
+        this.clienteDTO = clienteDTO;
+    }
+
+    private ClienteDTO clienteDTO;
 
     public ContaDTO() {
     }
 
     public ContaDTO(ContaFullDTO contaFullDTO) {
         super(contaFullDTO);
-    }
-
-    public Long getIdCliente() {
-        return idCliente;
-    }
-
-    public void setIdCliente(Long idCliente) {
-        this.idCliente = idCliente;
     }
 }

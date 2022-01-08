@@ -4,12 +4,12 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "tb_seq_conta")
-@SequenceGenerator(name = "sq_seq_conta_generator", sequenceName = "sq_seq_conta", allocationSize = 1)
-public class SeqConta implements Serializable {
+@Table(name = "tb_seq_agencia")
+@SequenceGenerator(name = "sq_seq_agencia_generator", sequenceName = "sq_seq_agencia", allocationSize = 1)
+public class SeqAgencia implements Serializable {
     @Id
     @Column(name = "id_seq_conta")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sq_seq_conta_generator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sq_seq_agencia_generator")
     private Long id;
     
     @Column(name = "nr_ano", nullable = false)
@@ -18,8 +18,8 @@ public class SeqConta implements Serializable {
     @Column(name = "nr_sequencial", nullable = false)
     private Long nrSequencial;
 
-    @Column(name = "id_cliente", nullable = false)
-    private Long idCliente;
+    @Column(name = "id_conta", nullable = false)
+    private Long idConta;
 
     public Long getId() {
         return id;
@@ -45,11 +45,11 @@ public class SeqConta implements Serializable {
         this.nrSequencial = nrSequencial;
     }
 
-    public Long getIdCliente() {
-        return idCliente;
+    public Long getIdConta() {
+        return idConta;
     }
 
-    public void setIdCliente(Long idConta) {
-        this.idCliente = idConta;
+    public void setIdConta(Long idConta) {
+        this.idConta = idConta;
     }
 }
