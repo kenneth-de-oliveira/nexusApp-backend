@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class ContaFullDTO {
     private Long id;
     private String numero;
-    private AgenciaDTO agenciaDTO;
+    private String agencia;
     private double saldo;
     private double limite;
     private ContaStatus status;
@@ -16,11 +16,26 @@ public class ContaFullDTO {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    public ContaFullDTO() {
+    }
+
+    public ContaFullDTO(ContaFullDTO contaFullDTO) {
+        this.setClienteDTO(contaFullDTO.clienteDTO);
+        this.setCreatedAt(contaFullDTO.createdAt);
+        this.setUpdatedAt(contaFullDTO.updatedAt);
+        this.setLimite(contaFullDTO.limite);
+        this.setAgencia(contaFullDTO.agencia);
+        this.setId(contaFullDTO.id);
+        this.setSaldo(contaFullDTO.saldo);
+        this.setNumero(contaFullDTO.numero);
+        this.setStatus(contaFullDTO.status);
+    }
+
     public Conta toModel() {
         Conta conta = new Conta();
-        conta.setAgencia(this.agenciaDTO.toModel());
         conta.setCliente(this.clienteDTO.toModel());
         conta.setCreatedAt(this.createdAt);
+        conta.setAgencia(this.agencia);
         conta.setUpdatedAt(this.updatedAt);
         conta.setLimite(this.limite);
         conta.setId(this.id);
@@ -46,12 +61,12 @@ public class ContaFullDTO {
         this.numero = numero;
     }
 
-    public AgenciaDTO getAgenciaDTO() {
-        return agenciaDTO;
+    public String getAgencia() {
+        return agencia;
     }
 
-    public void setAgenciaDTO(AgenciaDTO agenciaDTO) {
-        this.agenciaDTO = agenciaDTO;
+    public void setAgencia(String agencia) {
+        this.agencia = agencia;
     }
 
     public double getSaldo() {

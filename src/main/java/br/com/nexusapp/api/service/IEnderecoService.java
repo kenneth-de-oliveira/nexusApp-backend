@@ -7,4 +7,5 @@ import java.util.List;
 public interface IEnderecoService {
     EnderecoDTO cadastrar(Long idCliente, EnderecoDTO enderecoDTO);
     List<EnderecoDTO> listaDoClientePorCpf(String cpf);
+    EnderecoDTO buscarDoClientePorId(Long id);
 }

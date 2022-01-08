@@ -1,6 +1,6 @@
 package br.com.nexusapp.api.service.impl;
 
-import br.com.nexusapp.api.model.Conta;
+import br.com.nexusapp.api.model.Cliente;
 import br.com.nexusapp.api.model.SeqConta;
 import br.com.nexusapp.api.repository.SeqContaRepository;
 import br.com.nexusapp.api.service.ISeqContaService;
@@ -28,25 +28,28 @@ public class SeqContaServiceImpl implements ISeqContaService {
 
 	@Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-	public synchronized String gerarNumeroConta(Conta conta) {
-    	long ano = LocalDate.now().getYear();
-		long sequencial = obterCodigoSequencialPorTipo(conta);
-		String nrTipo = this.obterStringZerosPrefixado(conta.getId(), QTD_DIGITOS_CONTA);
+	public synchronized String gerarNumeroContaCliente(Cliente cliente) {
+
+		long ano = LocalDate.now().getYear();
+		long sequencial = obterCodigoSequencialPorTipo(cliente);
+
+		String nrTipo = this.obterStringZerosPrefixado(cliente.getId(), QTD_DIGITOS_CONTA);
 		String nrSequencial = this.obterStringZerosPrefixado(sequencial, QTD_DIGITOS_SEQ_CONTA);
-		return "NXCT" + ano + nrTipo + nrSequencial;
+
+		return "NX" + ano + nrTipo + nrSequencial;
 	}
     
-    private long obterCodigoSequencialPorTipo(Conta conta) {
+    private long obterCodigoSequencialPorTipo(Cliente cliente) {
 
 		long sequencial = 0L;
 		long ano = LocalDate.now().getYear();
 
-		SeqConta seqConta = buscaCodigoPorAnoTipo(conta, ano);
+		SeqConta seqConta = buscaCodigoPorAnoTipo(cliente.getId(), ano);
 
 		if(Optional.ofNullable(seqConta).isEmpty() || Optional.ofNullable(seqConta.getId()).isEmpty()) {
 			seqConta = new SeqConta();
 			seqConta.setNrAno(ano);
-			seqConta.setConta(conta);
+			seqConta.setIdConta(cliente.getId());
 		} else {
 			sequencial = seqConta.getNrSequencial();
 		}
@@ -58,11 +61,11 @@ public class SeqContaServiceImpl implements ISeqContaService {
 		return sequencial;
 	}
 
-	private SeqConta buscaCodigoPorAnoTipo(Conta conta, Long nrAno) {
-		return repository.findByContaAndNrAno(conta, nrAno);
+	private SeqConta buscaCodigoPorAnoTipo(Long idConta, Long nrAno) {
+		return repository.findByIdAndNrAno(idConta, nrAno);
 	}
 
 	private String obterStringZerosPrefixado(final long valor, final int quantidade) {
-		return "%0" + quantidade + "d" + valor;
+		return String.format("%0"+ quantidade + "d", valor);
 	}
 }

@@ -16,10 +16,9 @@ public class SeqConta {
     
     @Column(name = "nr_sequencial", nullable = false)
     private Long nrSequencial;
-    
-    @ManyToOne
-    @JoinColumn(name = "fk_conta", nullable = false)
-    private Conta conta;
+
+    @Column(name = "fk_conta", nullable = false)
+    private Long idConta;
 
     public Long getId() {
         return id;
@@ -45,11 +44,11 @@ public class SeqConta {
         this.nrSequencial = nrSequencial;
     }
 
-    public Conta getConta() {
-        return conta;
+    public Long getIdConta() {
+        return idConta;
     }
 
-    public void setConta(Conta conta) {
-        this.conta = conta;
+    public void setIdConta(Long idConta) {
+        this.idConta = idConta;
     }
 }

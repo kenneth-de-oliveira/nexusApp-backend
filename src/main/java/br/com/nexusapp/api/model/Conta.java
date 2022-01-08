@@ -21,9 +21,8 @@ public class Conta implements Serializable {
     @Column(name = "cl_numero", nullable = false, unique = true)
     private String numero;
 
-    @OneToOne
-    @JoinColumn(name = "fk_agencia", nullable = false)
-    private Agencia agencia;
+    @Column(name = "cl_agencia", nullable = false, unique = true)
+    private String agencia;
 
     @Column(name = "cl_saldo", nullable = false)
     private double saldo;
@@ -55,7 +54,7 @@ public class Conta implements Serializable {
 
     public ContaFullDTO toDTO() {
         ContaFullDTO contaFullDTO = new ContaFullDTO();
-        contaFullDTO.setAgenciaDTO(this.agencia.toDTO());
+        contaFullDTO.setAgencia(this.agencia);
         contaFullDTO.setCreatedAt(this.createdAt);
         contaFullDTO.setClienteDTO(this.cliente.toDTO());
         contaFullDTO.setUpdatedAt(this.updatedAt);
@@ -67,11 +66,11 @@ public class Conta implements Serializable {
         return contaFullDTO;
     }
 
-    public Agencia getAgencia() {
+    public String getAgencia() {
         return agencia;
     }
 
-    public void setAgencia(Agencia agencia) {
+    public void setAgencia(String agencia) {
         this.agencia = agencia;
     }
 

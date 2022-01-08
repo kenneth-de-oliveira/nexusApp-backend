@@ -1,7 +1,7 @@
 package br.com.nexusapp.api.service;
 
-import br.com.nexusapp.api.model.Conta;
+import br.com.nexusapp.api.model.Cliente;
 
 public interface ISeqContaService {
-	String gerarNumeroConta(Conta conta);
+    String gerarNumeroContaCliente(Cliente cliente);
 }

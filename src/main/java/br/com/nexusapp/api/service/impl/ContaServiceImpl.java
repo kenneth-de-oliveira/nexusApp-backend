@@ -1,9 +1,9 @@
 package br.com.nexusapp.api.service.impl;
 
-import br.com.nexusapp.api.dtos.AgenciaDTO;
 import br.com.nexusapp.api.dtos.ClienteDTO;
 import br.com.nexusapp.api.dtos.ContaDTO;
 import br.com.nexusapp.api.dtos.ContaFullDTO;
+import br.com.nexusapp.api.dtos.ContaMinimumDTO;
 import br.com.nexusapp.api.exception.ConflictException;
 import br.com.nexusapp.api.exception.NotFoundException;
 import br.com.nexusapp.api.model.Conta;
@@ -23,39 +23,45 @@ public class ContaServiceImpl implements IContaService {
 
     private final ContaRepository repository;
     private final ISeqContaService iSeqContaService;
-    private final ISeqAgenciaService iSeqAgenciaService;
+    private final IEnderecoService iEnderecoService;
     private final IClienteService clienteService;
-    private final IAgenciaService iAgenciaService;
     private final MessageSource ms;
 
     @Autowired
     public ContaServiceImpl(ContaRepository repository, ISeqContaService iSeqContaService,
-        ISeqAgenciaService iSeqAgenciaService, IClienteService clienteService,
-        IAgenciaService iAgenciaService, MessageSource ms) {
+        IEnderecoService iEnderecoService, IClienteService clienteService,
+        MessageSource ms) {
         this.repository = repository;
         this.iSeqContaService = iSeqContaService;
-        this.iSeqAgenciaService = iSeqAgenciaService;
+        this.iEnderecoService = iEnderecoService;
         this.clienteService = clienteService;
-        this.iAgenciaService = iAgenciaService;
         this.ms = ms;
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ContaFullDTO cadastrar(ContaDTO contaDTO) {
+
         Optional<Conta> contaOpt = repository.consultaPorIdCliente(contaDTO.getIdCliente());
+
         if (contaOpt.isPresent()) {
             throw new ConflictException(ms.getMessage("conta.cadastro.erro",
         null, LocaleContextHolder.getLocale()));
         }
-        contaDTO.setAgenciaDTO(iAgenciaService.buscarAgenciaPorId(contaDTO.getAgenciaDTO().getId()));
-        ClienteDTO clienteDTO = clienteService.buscarClientePorId(contaDTO.getIdCliente());
-        contaDTO.setClienteDTO(clienteDTO);
+
+        ClienteDTO clienteDTO = getCliente(contaDTO);
+
         var conta = contaDTO.toModel();
+        conta.setNumero(iSeqContaService.gerarNumeroContaCliente(clienteDTO.toModel()));
         conta.setCliente(clienteDTO.toModel());
-        this.gerarAgenciaNumeroConta(contaDTO, conta);
+
+        //TODO gerar numero agencia da conta do cliente
+
+        conta.setAgencia("123");
+
         repository.save(conta);
-        return conta.toDTO();
+
+        return toMinimumDTO(clienteDTO, conta);
     }
 
     @Override
@@ -88,8 +94,17 @@ public class ContaServiceImpl implements IContaService {
         return contaOpt.get().toDTO();
     }
 
-    private void gerarAgenciaNumeroConta(ContaDTO contaDTO, Conta conta) {
-        conta.getAgencia().setNumero(iSeqAgenciaService.gerarNumeroAgencia(contaDTO.getAgenciaDTO().toModel()));
-        conta.setNumero(iSeqContaService.gerarNumeroConta(contaDTO.toModel()));
+    private ContaMinimumDTO toMinimumDTO(ClienteDTO clienteDTO, Conta conta) {
+        ContaMinimumDTO contaMinimumDTO = new ContaMinimumDTO(conta.toDTO());
+        contaMinimumDTO.setEnderecoDTO(clienteDTO.getEnderecoDTO());
+        return contaMinimumDTO;
+    }
+
+    private ClienteDTO getCliente(ContaDTO contaDTO) {
+        ClienteDTO clienteDTO = clienteService.buscarClientePorId(contaDTO.getIdCliente());
+        clienteDTO.setEnderecoDTO(iEnderecoService.buscarDoClientePorId(clienteDTO.getId()));
+        clienteDTO.getEnderecoDTO().setIdCliente(clienteDTO.getId());
+        contaDTO.setClienteDTO(clienteDTO);
+        return clienteDTO;
     }
 }
