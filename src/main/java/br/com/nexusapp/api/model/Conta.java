@@ -48,8 +48,6 @@ public class Conta implements Serializable {
         status = ContaStatus.of(1);
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
-        this.numero = "123";
-        this.agencia = "123-A";
         this.saldo = 0;
         this.limite = 0;
     }
@@ -68,6 +66,14 @@ public class Conta implements Serializable {
         return contaFullDTO;
     }
 
+    public String getAgencia() {
+        return agencia;
+    }
+
+    public void setAgencia(String agencia) {
+        this.agencia = agencia;
+    }
+
     public Long getId() {
         return id;
     }
@@ -82,14 +88,6 @@ public class Conta implements Serializable {
 
     public void setNumero(String numero) {
         this.numero = numero;
-    }
-
-    public String getAgencia() {
-        return agencia;
-    }
-
-    public void setAgencia(String agencia) {
-        this.agencia = agencia;
     }
 
     public double getSaldo() {

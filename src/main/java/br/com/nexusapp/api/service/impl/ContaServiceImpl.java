@@ -3,12 +3,11 @@ package br.com.nexusapp.api.service.impl;
 import br.com.nexusapp.api.dtos.ClienteDTO;
 import br.com.nexusapp.api.dtos.ContaDTO;
 import br.com.nexusapp.api.dtos.ContaFullDTO;
-import br.com.nexusapp.api.exception.ConflictException;
+import br.com.nexusapp.api.dtos.ContaMinimumDTO;
 import br.com.nexusapp.api.exception.NotFoundException;
 import br.com.nexusapp.api.model.Conta;
 import br.com.nexusapp.api.repository.ContaRepository;
-import br.com.nexusapp.api.service.IClienteService;
-import br.com.nexusapp.api.service.IContaService;
+import br.com.nexusapp.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -22,12 +21,24 @@ import java.util.Optional;
 public class ContaServiceImpl implements IContaService {
 
     private final ContaRepository repository;
+    private final ISeqContaService iSeqContaService;
+    private final ISeqAgenciaService iSeqAgenciaService;
+    private final IEnderecoService iEnderecoService;
     private final IClienteService clienteService;
     private final MessageSource ms;
 
     @Autowired
-    public ContaServiceImpl(ContaRepository repository, IClienteService clienteService, MessageSource ms) {
+    public ContaServiceImpl(
+        ContaRepository repository,
+        ISeqContaService iSeqContaService,
+        ISeqAgenciaService iSeqAgenciaService,
+        IEnderecoService iEnderecoService,
+        IClienteService clienteService,
+        MessageSource ms) {
         this.repository = repository;
+        this.iSeqContaService = iSeqContaService;
+        this.iSeqAgenciaService = iSeqAgenciaService;
+        this.iEnderecoService = iEnderecoService;
         this.clienteService = clienteService;
         this.ms = ms;
     }
@@ -35,17 +46,16 @@ public class ContaServiceImpl implements IContaService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ContaFullDTO cadastrar(ContaDTO contaDTO) {
-        Optional<Conta> contaOpt = repository.consultaPorIdCliente(contaDTO.getIdCliente());
-        if (contaOpt.isPresent()) {
-            throw new ConflictException(ms.getMessage("conta.cadastro.erro",
-        null, LocaleContextHolder.getLocale()));
-        }
-        ClienteDTO clienteDTO = clienteService.buscarClientePorId(contaDTO.getIdCliente());
-        contaDTO.setClienteDTO(clienteDTO);
+
+        ClienteDTO clienteDTO = cadastraClienteConta(contaDTO);
+
         var conta = contaDTO.toModel();
+        conta.setNumero(iSeqContaService.gerarNumeroContaCliente(clienteDTO.toModel()));
+        conta.setAgencia(iSeqAgenciaService.gerarNumeroAgenciaCliente(clienteDTO.toModel()));
         conta.setCliente(clienteDTO.toModel());
         repository.save(conta);
-        return conta.toDTO();
+
+        return toMinimumDTO(clienteDTO, conta);
     }
 
     @Override
@@ -55,7 +65,7 @@ public class ContaServiceImpl implements IContaService {
             throw new NotFoundException(ms.getMessage("conta.consulta.erro",
         null, LocaleContextHolder.getLocale()));
         }
-        return contaOpt.get().toDTO();
+        return getContaMinimumDTO(contaOpt.get());
     }
 
     @Override
@@ -65,7 +75,7 @@ public class ContaServiceImpl implements IContaService {
             throw new NotFoundException(ms.getMessage("conta.consulta.erro",
         null, LocaleContextHolder.getLocale()));
         }
-        return contaOpt.get().toDTO();
+        return getContaMinimumDTO(contaOpt.get());
     }
 
     @Override
@@ -75,7 +85,32 @@ public class ContaServiceImpl implements IContaService {
             throw new NotFoundException(ms.getMessage("conta.consulta.erro",
         null, LocaleContextHolder.getLocale()));
         }
-        return contaOpt.get().toDTO();
+        return getContaMinimumDTO(contaOpt.get());
     }
 
+    private ContaMinimumDTO toMinimumDTO(ClienteDTO clienteDTO, Conta conta) {
+        ContaMinimumDTO contaMinimumDTO = new ContaMinimumDTO(conta.toDTO());
+        contaMinimumDTO.setEnderecoDTO(clienteDTO.getEnderecoDTO());
+        return contaMinimumDTO;
+    }
+
+    private ClienteDTO getCliente(ContaFullDTO contaDTO) {
+        ClienteDTO clienteDTO = clienteService.buscarClientePorId(contaDTO.getClienteDTO().getId());
+        clienteDTO.setEnderecoDTO(iEnderecoService.buscarDoClientePorId(clienteDTO.getId()));
+        clienteDTO.getEnderecoDTO().setIdCliente(clienteDTO.getId());
+        contaDTO.setClienteDTO(clienteDTO);
+        return clienteDTO;
+    }
+
+    private ClienteDTO cadastraClienteConta(ContaDTO contaDTO) {
+        contaDTO.setClienteDTO(clienteService.cadastrar(contaDTO.getClienteDTO()));
+        ClienteDTO clienteDTO = getCliente(contaDTO);
+        contaDTO.setClienteDTO(clienteDTO);
+        return clienteDTO;
+    }
+
+    private ContaMinimumDTO getContaMinimumDTO(Conta conta) {
+        ClienteDTO clienteDTO = getCliente(conta.toDTO());
+        return toMinimumDTO(clienteDTO, conta);
+    }
 }

@@ -36,6 +36,14 @@ public class EnderecoController {
     }
 
     @ResponseBody
+    @GetMapping("/{id}")
+    public ResponseEntity<EnderecoDTO> buscarDoClientePorId(
+        @PathVariable final Long id){
+        return ResponseEntity.ok(
+        enderecoService.buscarDoClientePorId(id));
+    }
+
+    @ResponseBody
     @GetMapping("/lista-por-cpf/{cpf}")
     public ResponseEntity<List<EnderecoDTO>> listaDoClientePorCpf(
         @PathVariable final String cpf){

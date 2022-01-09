@@ -21,6 +21,21 @@ public class ClienteFullDTO {
     private ClienteStatus status;
     private EnderecoDTO enderecoDTO;
 
+    public ClienteFullDTO() {
+    }
+
+    public ClienteFullDTO(Cliente cliente) {
+        this.setCreatedAt(cliente.getCreatedAt());
+        this.setUpdatedAt(cliente.getUpdatedAt());
+        this.setDocumento(cliente.getDocumento());
+        this.setTelefone(cliente.getTelefone());
+        this.setEmail(cliente.getEmail());
+        this.setId(cliente.getId());
+        this.setSobrenome(cliente.getSobrenome());
+        this.setStatus(cliente.getStatus());
+        this.setNome(cliente.getNome());
+    }
+
     public Cliente toModel() {
         Cliente cliente = new Cliente();
         cliente.setCreatedAt(this.createdAt);

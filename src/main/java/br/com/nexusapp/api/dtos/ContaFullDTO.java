@@ -16,11 +16,25 @@ public class ContaFullDTO {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    public ContaFullDTO() {
+    }
+
+    public ContaFullDTO(ContaFullDTO contaFullDTO) {
+        this.setClienteDTO(contaFullDTO.clienteDTO);
+        this.setCreatedAt(contaFullDTO.createdAt);
+        this.setUpdatedAt(contaFullDTO.updatedAt);
+        this.setLimite(contaFullDTO.limite);
+        this.setAgencia(contaFullDTO.agencia);
+        this.setId(contaFullDTO.id);
+        this.setSaldo(contaFullDTO.saldo);
+        this.setNumero(contaFullDTO.numero);
+        this.setStatus(contaFullDTO.status);
+    }
+
     public Conta toModel() {
         Conta conta = new Conta();
-        conta.setAgencia(this.agencia);
-        conta.setCliente(this.clienteDTO.toModel());
         conta.setCreatedAt(this.createdAt);
+        conta.setAgencia(this.agencia);
         conta.setUpdatedAt(this.updatedAt);
         conta.setLimite(this.limite);
         conta.setId(this.id);

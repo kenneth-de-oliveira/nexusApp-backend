@@ -159,11 +159,9 @@ public class Cliente implements Serializable {
         clienteDTO.setSobrenome(this.sobrenome);
         clienteDTO.setStatus(this.status);
         clienteDTO.setNome(this.nome);
-        enderecoDTO.setIdCliente(this.id);
         clienteDTO.setEnderecoDTO(enderecoDTO);
         return clienteDTO;
     }
-
 
     @Override
     public String toString() {
