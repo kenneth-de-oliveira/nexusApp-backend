@@ -2,12 +2,14 @@ package br.com.nexusapp.api.controller;
 
 import br.com.nexusapp.api.dtos.ContaDTO;
 import br.com.nexusapp.api.dtos.ContaFullDTO;
+import br.com.nexusapp.api.event.RecursoCriadoEvent;
 import br.com.nexusapp.api.service.IContaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -18,10 +20,14 @@ import javax.validation.Valid;
 public class ContaController {
 
     private final IContaService contaService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    public ContaController(IContaService contaService) {
+    public ContaController(
+            IContaService contaService,
+            ApplicationEventPublisher eventPublisher) {
         this.contaService = contaService;
+        this.eventPublisher = eventPublisher;
     }
 
     @ResponseBody
@@ -54,9 +60,7 @@ public class ContaController {
         @RequestBody @Valid ContaDTO contaDto,
         HttpServletResponse response) {
         var contaDTO = contaService.cadastrar(contaDto);
-        var uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
-        .buildAndExpand(contaDTO.getId()).toUri();
-        response.setHeader("Location", uri.toASCIIString());
-        return ResponseEntity.created(uri).body(contaDTO);
+        eventPublisher.publishEvent(new RecursoCriadoEvent(this, response, contaDTO.getId()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(contaDTO);
     }
 }
