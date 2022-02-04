@@ -1,9 +1,7 @@
 package br.com.nexusapp.api.service.impl;
 
-import br.com.nexusapp.api.dtos.ClienteDTO;
-import br.com.nexusapp.api.dtos.ContaDTO;
-import br.com.nexusapp.api.dtos.ContaFullDTO;
-import br.com.nexusapp.api.dtos.ContaMinimumDTO;
+import br.com.nexusapp.api.dtos.*;
+import br.com.nexusapp.api.exception.BadRequestException;
 import br.com.nexusapp.api.exception.NotFoundException;
 import br.com.nexusapp.api.model.Conta;
 import br.com.nexusapp.api.repository.ContaRepository;
@@ -15,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -78,6 +77,14 @@ public class ContaServiceImpl implements IContaService {
         return getContaMinimumDTO(contaOpt.get());
     }
 
+	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void depositar(InfoContaDTO infoContaDTO) {
+		atualizaSaldo(infoContaDTO,repository.findByAgencia(infoContaDTO.getAgencia())
+				.orElseThrow(() -> new BadRequestException(ms.getMessage("conta.consulta.erro", 
+						null, LocaleContextHolder.getLocale()))));
+	}
+
     @Override
     public ContaFullDTO buscarContaPorNumero(String numero) {
         Optional<Conta> contaOpt = repository.findByNumero(numero);
@@ -112,5 +119,15 @@ public class ContaServiceImpl implements IContaService {
     private ContaMinimumDTO getContaMinimumDTO(Conta conta) {
         ClienteDTO clienteDTO = getCliente(conta.toDTO());
         return toMinimumDTO(clienteDTO, conta);
+    }
+
+    private void atualizaSaldo(InfoContaDTO infoContaDTO, Conta conta) {
+		if (infoContaDTO.getValor() < 0) {
+			throw new BadRequestException(ms.getMessage("conta-saldo.erro",
+			null, LocaleContextHolder.getLocale()));
+		}
+        conta.setSaldo((conta.getLimite() + conta.getSaldo()) + infoContaDTO.getValor());
+        conta.setUpdatedAt(LocalDateTime.now());
+        repository.save(conta);
     }
 }
