@@ -10,4 +10,5 @@ public interface IContaService {
     ContaFullDTO buscarContaPorNumero(String numero);
     ContaFullDTO buscarContaAgencia(String agencia);
     void depositar(InfoContaDTO contaDto);
+    void sacar(InfoContaDTO infoContaDTO);
 }

@@ -10,5 +10,6 @@ public interface ContaRepository extends JpaRepository<Conta, Long> {
     @Query(nativeQuery = true, value = "SELECT * FROM tb_conta WHERE fk_cliente = :idCliente")
     Optional<Conta> consultaPorIdCliente(Long idCliente);
     Optional<Conta> findByAgencia(String agencia);
+    Optional<Conta> findByAgenciaAndNumero(String agencia, String numero);
     Optional<Conta> findByNumero(String numero);
 }

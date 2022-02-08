@@ -80,4 +80,12 @@ public class ContaController {
         contaService.depositar(infoContaDTO);
         return ResponseEntity.ok().build();
     }
+
+    @ResponseBody
+    @PostMapping("/sacar")
+    public ResponseEntity<ContaFullDTO> sacar(
+        @RequestBody @Valid InfoContaDTO infoContaDTO) {
+        contaService.sacar(infoContaDTO);
+        return ResponseEntity.ok().build();
+    }
 }

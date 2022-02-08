@@ -1,6 +1,7 @@
 package br.com.nexusapp.api.service.impl;
 
 import br.com.nexusapp.api.dtos.*;
+import br.com.nexusapp.api.enums.OperacaoEnum;
 import br.com.nexusapp.api.exception.BadRequestException;
 import br.com.nexusapp.api.exception.NotFoundException;
 import br.com.nexusapp.api.model.Conta;
@@ -15,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+
+import static br.com.nexusapp.api.enums.OperacaoEnum.*;
 
 @Service
 public class ContaServiceImpl implements IContaService {
@@ -77,13 +80,21 @@ public class ContaServiceImpl implements IContaService {
         return getContaMinimumDTO(contaOpt.get());
     }
 
-	@Override
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void depositar(InfoContaDTO infoContaDTO) {
-		atualizaSaldo(infoContaDTO,repository.findByAgencia(infoContaDTO.getAgencia())
-				.orElseThrow(() -> new BadRequestException(ms.getMessage("conta.consulta.erro", 
-						null, LocaleContextHolder.getLocale()))));
-	}
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void depositar(InfoContaDTO infoContaDTO) {
+        atualizaSaldo(infoContaDTO, repository.findByAgenciaAndNumero(infoContaDTO.getAgencia(), infoContaDTO.getNumero())
+                .orElseThrow(() -> new BadRequestException(ms.getMessage("conta.consulta.erro",
+                        null, LocaleContextHolder.getLocale()))), DEPOSITO);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void sacar(InfoContaDTO infoContaDTO) {
+        atualizaSaldo(infoContaDTO, repository.findByAgenciaAndNumero(infoContaDTO.getAgencia(), infoContaDTO.getNumero())
+                .orElseThrow(() -> new BadRequestException(ms.getMessage("conta.consulta.erro",
+                        null, LocaleContextHolder.getLocale()))), SAQUE);
+    }
 
     @Override
     public ContaFullDTO buscarContaPorNumero(String numero) {
@@ -121,13 +132,38 @@ public class ContaServiceImpl implements IContaService {
         return toMinimumDTO(clienteDTO, conta);
     }
 
-    private void atualizaSaldo(InfoContaDTO infoContaDTO, Conta conta) {
-		if (infoContaDTO.getValor() < 0) {
-			throw new BadRequestException(ms.getMessage("conta-saldo.erro",
-			null, LocaleContextHolder.getLocale()));
-		}
-        conta.setSaldo((conta.getLimite() + conta.getSaldo()) + infoContaDTO.getValor());
+    private void atualizaSaldo(InfoContaDTO infoContaDTO, Conta conta, OperacaoEnum operacao) {
+        this.verificarInfoValor(infoContaDTO);
+        conta.setSaldo(getValor(infoContaDTO, conta, operacao));
         conta.setUpdatedAt(LocalDateTime.now());
         repository.save(conta);
+    }
+
+    private double getValor(InfoContaDTO infoContaDTO, Conta conta, OperacaoEnum operacao) {
+        double valor = 0;
+        switch (operacao){
+            case DEPOSITO:
+                valor = conta.getSaldo() + infoContaDTO.getValor();
+                break;
+            case SAQUE:
+                valor = conta.getSaldo() + conta.getLimite();
+                if ((valor - infoContaDTO.getValor()) >= 0) {
+                    valor = conta.getSaldo() - infoContaDTO.getValor();
+                    break;
+                } else {
+                    throw new BadRequestException(ms.getMessage("conta-saque.erro",
+                    null, LocaleContextHolder.getLocale()));
+                }
+            case TRANSFERENCIA:
+                break;
+        }
+        return valor;
+    }
+
+    private void verificarInfoValor(InfoContaDTO infoContaDTO) {
+        if (infoContaDTO.getValor() < 0) {
+            throw new BadRequestException(ms.getMessage("conta-deposito.erro",
+            null, LocaleContextHolder.getLocale()));
+        }
     }
 }
