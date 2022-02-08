@@ -1,5 +1,6 @@
 package br.com.nexusapp.api.exception.handler;
 
+import br.com.nexusapp.api.exception.BadRequestException;
 import br.com.nexusapp.api.exception.ConflictException;
 import br.com.nexusapp.api.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,14 @@ public class NexusAppBackendExceptionHandler extends ResponseEntityExceptionHand
     }
 
     @ExceptionHandler(NotFoundException.class)
-    protected ResponseEntity<Error> handleConstraintViolationException(NotFoundException ex) {
+    protected ResponseEntity<Error> handleNotFoundException(NotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Error(
+        LocalDateTime.now(), HttpStatus.NOT_FOUND.value(),
+        ex.getMessage()));
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    protected ResponseEntity<Error> handleBadRequestException(BadRequestException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(
         LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(),
         ex.getMessage()));
