@@ -3,6 +3,7 @@ package br.com.nexusapp.api.controller;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import br.com.nexusapp.api.dtos.InfoContaFullDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -88,4 +89,13 @@ public class ContaController {
         contaService.sacar(infoContaDTO);
         return ResponseEntity.ok().build();
     }
+
+    @ResponseBody
+    @PostMapping("/transferir")
+    public ResponseEntity<ContaFullDTO> transferir(
+        @RequestBody @Valid InfoContaFullDTO infoContaFullDTO) {
+        contaService.transferir(infoContaFullDTO);
+        return ResponseEntity.ok().build();
+    }
+
 }
