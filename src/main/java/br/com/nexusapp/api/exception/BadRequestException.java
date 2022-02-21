@@ -2,7 +2,12 @@ package br.com.nexusapp.api.exception;
 
 public class BadRequestException extends RuntimeException{
 
-    public BadRequestException(String msg){
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -860366253898178508L;
+
+	public BadRequestException(String msg){
         super(msg);
     }
 

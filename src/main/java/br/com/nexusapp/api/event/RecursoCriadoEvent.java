@@ -6,7 +6,11 @@ import javax.servlet.http.HttpServletResponse;
 
 public class RecursoCriadoEvent extends ApplicationEvent {
 
-    private HttpServletResponse response;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 6394627940697503355L;
+	private HttpServletResponse response;
     private Long codigo;
 
     public RecursoCriadoEvent(Object source, HttpServletResponse response, Long codigo) {

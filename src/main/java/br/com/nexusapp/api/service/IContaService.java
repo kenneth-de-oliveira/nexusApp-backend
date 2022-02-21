@@ -3,6 +3,7 @@ package br.com.nexusapp.api.service;
 import br.com.nexusapp.api.dtos.ContaDTO;
 import br.com.nexusapp.api.dtos.ContaFullDTO;
 import br.com.nexusapp.api.dtos.InfoContaDTO;
+import br.com.nexusapp.api.dtos.InfoContaFullDTO;
 
 public interface IContaService {
     ContaFullDTO cadastrar(ContaDTO contaDTO);
@@ -11,4 +12,5 @@ public interface IContaService {
     ContaFullDTO buscarContaAgencia(String agencia);
     void depositar(InfoContaDTO contaDto);
     void sacar(InfoContaDTO infoContaDTO);
+    void transferir(InfoContaFullDTO infoContaFullDTO);
 }

@@ -36,4 +36,12 @@ public class InfoContaDTO {
     public void setValor(double valor) {
         this.valor = valor;
     }
+
+    public static InfoContaDTO toInfoContaDTO(String agencia, String numero, double valor) {
+        InfoContaDTO infoContaDTO = new InfoContaDTO();
+        infoContaDTO.setAgencia(agencia);
+        infoContaDTO.setNumero(numero);
+        infoContaDTO.setValor(valor);
+        return infoContaDTO;
+    }
 }

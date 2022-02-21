@@ -7,7 +7,12 @@ import java.io.Serializable;
 @Table(name = "tb_seq_agencia")
 @SequenceGenerator(name = "sq_seq_agencia_generator", sequenceName = "sq_seq_agencia", allocationSize = 1)
 public class SeqAgencia implements Serializable {
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7635119558208981958L;
+
+	@Id
     @Column(name = "id_seq_conta")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sq_seq_agencia_generator")
     private Long id;

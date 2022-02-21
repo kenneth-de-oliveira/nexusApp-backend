@@ -1,6 +1,7 @@
 package br.com.nexusapp.api.service.impl;
 
 import br.com.nexusapp.api.dtos.*;
+import br.com.nexusapp.api.enums.ContaStatus;
 import br.com.nexusapp.api.enums.OperacaoEnum;
 import br.com.nexusapp.api.exception.BadRequestException;
 import br.com.nexusapp.api.exception.NotFoundException;
@@ -17,7 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static br.com.nexusapp.api.enums.OperacaoEnum.*;
+import static br.com.nexusapp.api.enums.OperacaoEnum.DEPOSITO;
+import static br.com.nexusapp.api.enums.OperacaoEnum.SAQUE;
 
 @Service
 public class ContaServiceImpl implements IContaService {
@@ -83,17 +85,20 @@ public class ContaServiceImpl implements IContaService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void depositar(InfoContaDTO infoContaDTO) {
-        atualizaSaldo(infoContaDTO, repository.findByAgenciaAndNumero(infoContaDTO.getAgencia(), infoContaDTO.getNumero())
-                .orElseThrow(() -> new BadRequestException(ms.getMessage("conta.consulta.erro",
-                        null, LocaleContextHolder.getLocale()))), DEPOSITO);
+        this.realizaDeposito(infoContaDTO);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void sacar(InfoContaDTO infoContaDTO) {
-        atualizaSaldo(infoContaDTO, repository.findByAgenciaAndNumero(infoContaDTO.getAgencia(), infoContaDTO.getNumero())
-                .orElseThrow(() -> new BadRequestException(ms.getMessage("conta.consulta.erro",
-                        null, LocaleContextHolder.getLocale()))), SAQUE);
+        this.realizaSaque(infoContaDTO);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void transferir(InfoContaFullDTO infoContaDTO) {
+        this.realizaSaque(InfoContaDTO.toInfoContaDTO(infoContaDTO.getAgencia(), infoContaDTO.getNumero(), infoContaDTO.getValor()));
+        this.realizaDeposito(InfoContaDTO.toInfoContaDTO(infoContaDTO.getAgenciaDestino(), infoContaDTO.getNumeroDestino(), infoContaDTO.getValor()));
     }
 
     @Override
@@ -141,21 +146,16 @@ public class ContaServiceImpl implements IContaService {
 
     private double getValor(InfoContaDTO infoContaDTO, Conta conta, OperacaoEnum operacao) {
         double valor = 0;
-        switch (operacao){
-            case DEPOSITO:
-                valor = conta.getSaldo() + infoContaDTO.getValor();
-                break;
-            case SAQUE:
-                valor = conta.getSaldo() + conta.getLimite();
-                if ((valor - infoContaDTO.getValor()) >= 0) {
-                    valor = conta.getSaldo() - infoContaDTO.getValor();
-                    break;
-                } else {
-                    throw new BadRequestException(ms.getMessage("conta-saque.erro",
-                    null, LocaleContextHolder.getLocale()));
-                }
-            case TRANSFERENCIA:
-                break;
+        if (operacao.equals(DEPOSITO)){
+            valor = conta.getSaldo() + infoContaDTO.getValor();
+        } else if (operacao.equals(SAQUE)){
+            valor = conta.getSaldo() + conta.getLimite();
+            if ((valor - infoContaDTO.getValor()) >= 0) {
+                valor = conta.getSaldo() - infoContaDTO.getValor();
+            } else {
+                throw new BadRequestException(ms.getMessage("conta-saque.erro",
+            null, LocaleContextHolder.getLocale()));
+            }
         }
         return valor;
     }
@@ -165,5 +165,17 @@ public class ContaServiceImpl implements IContaService {
             throw new BadRequestException(ms.getMessage("conta-deposito.erro",
             null, LocaleContextHolder.getLocale()));
         }
+    }
+
+    private void realizaDeposito(InfoContaDTO infoContaDTO) {
+        atualizaSaldo(infoContaDTO, repository.findByAgenciaAndNumeroAndStatus(infoContaDTO.getAgencia(), infoContaDTO.getNumero(), ContaStatus.ATIVO)
+                .orElseThrow(() -> new BadRequestException(ms.getMessage("conta.consulta.erro",
+                        null, LocaleContextHolder.getLocale()))), DEPOSITO);
+    }
+
+    private void realizaSaque(InfoContaDTO infoContaDTO) {
+        atualizaSaldo(infoContaDTO, repository.findByAgenciaAndNumeroAndStatus(infoContaDTO.getAgencia(), infoContaDTO.getNumero(), ContaStatus.ATIVO)
+                .orElseThrow(() -> new BadRequestException(ms.getMessage("conta.consulta.erro",
+                        null, LocaleContextHolder.getLocale()))), SAQUE);
     }
 }
