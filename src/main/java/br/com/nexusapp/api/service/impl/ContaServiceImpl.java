@@ -1,11 +1,13 @@
 package br.com.nexusapp.api.service.impl;
 
-import static br.com.nexusapp.api.enums.OperacaoEnum.DEPOSITO;
-import static br.com.nexusapp.api.enums.OperacaoEnum.SAQUE;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
-
+import br.com.nexusapp.api.dtos.*;
+import br.com.nexusapp.api.enums.ContaStatus;
+import br.com.nexusapp.api.enums.OperacaoEnum;
+import br.com.nexusapp.api.exception.BadRequestException;
+import br.com.nexusapp.api.exception.NotFoundException;
+import br.com.nexusapp.api.model.Conta;
+import br.com.nexusapp.api.repository.ContaRepository;
+import br.com.nexusapp.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -13,24 +15,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.nexusapp.api.dtos.ClienteDTO;
-import br.com.nexusapp.api.dtos.ContaDTO;
-import br.com.nexusapp.api.dtos.ContaFullDTO;
-import br.com.nexusapp.api.dtos.ContaMinimumDTO;
-import br.com.nexusapp.api.dtos.InfoContaDTO;
-import br.com.nexusapp.api.dtos.InfoContaFullDTO;
-import br.com.nexusapp.api.enums.ContaStatus;
-import br.com.nexusapp.api.enums.OperacaoEnum;
-import br.com.nexusapp.api.exception.BadRequestException;
-import br.com.nexusapp.api.exception.NotFoundException;
-import br.com.nexusapp.api.model.Conta;
-import br.com.nexusapp.api.repository.ClienteRepository;
-import br.com.nexusapp.api.repository.ContaRepository;
-import br.com.nexusapp.api.service.IClienteService;
-import br.com.nexusapp.api.service.IContaService;
-import br.com.nexusapp.api.service.IEnderecoService;
-import br.com.nexusapp.api.service.ISeqAgenciaService;
-import br.com.nexusapp.api.service.ISeqContaService;
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import static br.com.nexusapp.api.enums.OperacaoEnum.DEPOSITO;
+import static br.com.nexusapp.api.enums.OperacaoEnum.SAQUE;
 
 @Service
 public class ContaServiceImpl implements IContaService {
@@ -48,7 +37,6 @@ public class ContaServiceImpl implements IContaService {
         ISeqContaService iSeqContaService,
         ISeqAgenciaService iSeqAgenciaService,
         IEnderecoService iEnderecoService,
-        ClienteRepository clienteRepository,
         IClienteService clienteService,
         MessageSource ms) {
 		this.repository = repository;
@@ -78,22 +66,19 @@ public class ContaServiceImpl implements IContaService {
     public ContaFullDTO buscarContaPorCpf(String cpf) {
     	 ClienteDTO clienteDTO = clienteService.buscarClientePorCpf(cpf);
          Optional<Conta> contaOpt = repository.consultaPorIdCliente(clienteDTO.getId());
-         this.isContaAtiva(contaOpt);
-         return getContaMinimumDTO(contaOpt.get());
+         return this.isContaAtiva(contaOpt);
     }
 
     @Override
     public ContaFullDTO buscarContaPorId(Long id) {
         Optional<Conta> contaOpt = repository.findById(id);
-        this.isContaAtiva(contaOpt);
-        return getContaMinimumDTO(contaOpt.get());
+        return this.isContaAtiva(contaOpt);
     }
 
     @Override
     public ContaFullDTO buscarContaAgencia(String agencia) {
         Optional<Conta> contaOpt = repository.findByAgencia(agencia);
-        this.isContaAtiva(contaOpt);
-        return getContaMinimumDTO(contaOpt.get());
+        return this.isContaAtiva(contaOpt);
     }
 
     @Override
@@ -118,8 +103,7 @@ public class ContaServiceImpl implements IContaService {
     @Override
     public ContaFullDTO buscarContaPorNumero(String numero) {
         Optional<Conta> contaOpt = repository.findByNumero(numero);
-        this.isContaAtiva(contaOpt);
-        return getContaMinimumDTO(contaOpt.get());
+        return isContaAtiva(contaOpt);
     }
 
     private ContaMinimumDTO toMinimumDTO(ClienteDTO clienteDTO, Conta conta) {
@@ -191,10 +175,11 @@ public class ContaServiceImpl implements IContaService {
     }
 
     
-    private void isContaAtiva(Optional<Conta> contaOpt) {
+    private ContaFullDTO isContaAtiva(Optional<Conta> contaOpt) {
     	if (contaOpt.isEmpty()) {
             throw new NotFoundException(ms.getMessage("conta.consulta.erro",
         null, LocaleContextHolder.getLocale()));
         }
+        return getContaMinimumDTO(contaOpt.get());
     }
 }
