@@ -39,7 +39,7 @@ public class ContaServiceImpl implements IContaService {
         IEnderecoService iEnderecoService,
         IClienteService clienteService,
         MessageSource ms) {
-        this.repository = repository;
+		this.repository = repository;
         this.iSeqContaService = iSeqContaService;
         this.iSeqAgenciaService = iSeqAgenciaService;
         this.iEnderecoService = iEnderecoService;
@@ -63,23 +63,22 @@ public class ContaServiceImpl implements IContaService {
     }
 
     @Override
+    public ContaFullDTO buscarContaPorCpf(String cpf) {
+    	 ClienteDTO clienteDTO = clienteService.buscarClientePorCpf(cpf);
+         Optional<Conta> contaOpt = repository.consultaPorIdCliente(clienteDTO.getId());
+         return this.isContaAtiva(contaOpt);
+    }
+
+    @Override
     public ContaFullDTO buscarContaPorId(Long id) {
         Optional<Conta> contaOpt = repository.findById(id);
-        if (contaOpt.isEmpty()) {
-            throw new NotFoundException(ms.getMessage("conta.consulta.erro",
-        null, LocaleContextHolder.getLocale()));
-        }
-        return getContaMinimumDTO(contaOpt.get());
+        return this.isContaAtiva(contaOpt);
     }
 
     @Override
     public ContaFullDTO buscarContaAgencia(String agencia) {
         Optional<Conta> contaOpt = repository.findByAgencia(agencia);
-        if (contaOpt.isEmpty()) {
-            throw new NotFoundException(ms.getMessage("conta.consulta.erro",
-        null, LocaleContextHolder.getLocale()));
-        }
-        return getContaMinimumDTO(contaOpt.get());
+        return this.isContaAtiva(contaOpt);
     }
 
     @Override
@@ -104,11 +103,7 @@ public class ContaServiceImpl implements IContaService {
     @Override
     public ContaFullDTO buscarContaPorNumero(String numero) {
         Optional<Conta> contaOpt = repository.findByNumero(numero);
-        if (contaOpt.isEmpty()) {
-            throw new NotFoundException(ms.getMessage("conta.consulta.erro",
-        null, LocaleContextHolder.getLocale()));
-        }
-        return getContaMinimumDTO(contaOpt.get());
+        return isContaAtiva(contaOpt);
     }
 
     private ContaMinimumDTO toMinimumDTO(ClienteDTO clienteDTO, Conta conta) {
@@ -177,5 +172,14 @@ public class ContaServiceImpl implements IContaService {
         atualizaSaldo(infoContaDTO, repository.findByAgenciaAndNumeroAndStatus(infoContaDTO.getAgencia(), infoContaDTO.getNumero(), ContaStatus.ATIVO)
                 .orElseThrow(() -> new BadRequestException(ms.getMessage("conta.consulta.erro",
                         null, LocaleContextHolder.getLocale()))), SAQUE);
+    }
+
+    
+    private ContaFullDTO isContaAtiva(Optional<Conta> contaOpt) {
+    	if (contaOpt.isEmpty()) {
+            throw new NotFoundException(ms.getMessage("conta.consulta.erro",
+        null, LocaleContextHolder.getLocale()));
+        }
+        return getContaMinimumDTO(contaOpt.get());
     }
 }

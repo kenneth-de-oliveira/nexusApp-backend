@@ -6,6 +6,7 @@ import br.com.nexusapp.api.dtos.InfoContaDTO;
 import br.com.nexusapp.api.dtos.InfoContaFullDTO;
 
 public interface IContaService {
+	ContaFullDTO buscarContaPorCpf(String cpf);
     ContaFullDTO cadastrar(ContaDTO contaDTO);
     ContaFullDTO buscarContaPorId(Long id);
     ContaFullDTO buscarContaPorNumero(String numero);
