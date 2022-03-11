@@ -47,6 +47,7 @@ public class Extrato implements Serializable {
 		ExtratoDTO extratoDTO = new ExtratoDTO();
 		extratoDTO.setId(this.id);
 		extratoDTO.setDataExtrato(this.dataExtrato);
+		extratoDTO.setValor(this.valor);
 		extratoDTO.setAgencia(this.agencia);
 		extratoDTO.setNumero(this.numero);
 		extratoDTO.setOperacao(this.operacao);
