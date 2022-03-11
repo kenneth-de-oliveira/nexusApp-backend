@@ -1,24 +1,6 @@
 package br.com.nexusapp.api.service.impl;
 
-import static br.com.nexusapp.api.enums.OperacaoEnum.DEPOSITO;
-import static br.com.nexusapp.api.enums.OperacaoEnum.SAQUE;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import br.com.nexusapp.api.dtos.ClienteDTO;
-import br.com.nexusapp.api.dtos.ContaDTO;
-import br.com.nexusapp.api.dtos.ContaFullDTO;
-import br.com.nexusapp.api.dtos.ContaMinimumDTO;
-import br.com.nexusapp.api.dtos.InfoContaDTO;
-import br.com.nexusapp.api.dtos.InfoContaFullDTO;
+import br.com.nexusapp.api.dtos.*;
 import br.com.nexusapp.api.enums.ContaStatus;
 import br.com.nexusapp.api.enums.OperacaoEnum;
 import br.com.nexusapp.api.exception.BadRequestException;
@@ -27,11 +9,21 @@ import br.com.nexusapp.api.model.Conta;
 import br.com.nexusapp.api.model.Extrato;
 import br.com.nexusapp.api.repository.ContaRepository;
 import br.com.nexusapp.api.repository.ExtratoRepository;
-import br.com.nexusapp.api.service.IClienteService;
-import br.com.nexusapp.api.service.IContaService;
-import br.com.nexusapp.api.service.IEnderecoService;
-import br.com.nexusapp.api.service.ISeqAgenciaService;
-import br.com.nexusapp.api.service.ISeqContaService;
+import br.com.nexusapp.api.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static br.com.nexusapp.api.enums.OperacaoEnum.DEPOSITO;
+import static br.com.nexusapp.api.enums.OperacaoEnum.SAQUE;
 
 @Service
 public class ContaServiceImpl implements IContaService {
@@ -121,6 +113,17 @@ public class ContaServiceImpl implements IContaService {
     }
 
     @Override
+    public List<ExtratoDTO> listarExtratos(Long idConta) {
+        Conta conta = repository.findById(idConta).orElseThrow(() -> {
+            throw new NotFoundException(ms.getMessage("conta.consulta.erro",
+        null, LocaleContextHolder.getLocale()));
+        });
+        List<Extrato> allByAgenciaAndNumero = extratoRepository.findByAgenciaAndNumero(conta.getAgencia(), conta.getNumero());
+        return allByAgenciaAndNumero.stream().map(Extrato::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public ContaFullDTO buscarContaPorNumero(String numero) {
         Optional<Conta> contaOpt = repository.findByNumero(numero);
         return isContaAtiva(contaOpt);
@@ -203,9 +206,9 @@ public class ContaServiceImpl implements IContaService {
         }
         return getContaMinimumDTO(contaOpt.get());
     }
-    
+
     private void registrarMovimentacao(InfoContaDTO infoContaDTO, OperacaoEnum operacaoEnum) {
 		extratoRepository.save(new Extrato(infoContaDTO, operacaoEnum));
     }
-    
+
 }

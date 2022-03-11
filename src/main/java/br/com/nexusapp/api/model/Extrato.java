@@ -1,23 +1,12 @@
 package br.com.nexusapp.api.model;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
+import br.com.nexusapp.api.dtos.ExtratoDTO;
 import br.com.nexusapp.api.dtos.InfoContaDTO;
 import br.com.nexusapp.api.enums.OperacaoEnum;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tb_extrato")
@@ -30,31 +19,38 @@ public class Extrato implements Serializable {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "extrato_seq")
 	private Long id;
 
-	@NotBlank
 	@Column(name = "cl_numero", nullable = false)
 	private String numero;
 
-	@NotBlank
 	@Column(name = "cl_agencia", nullable = false)
 	private String agencia;
 
-	@NotNull
 	@Column(name = "cl_valor", nullable = false)
 	private double valor;
 
-	@NotNull
 	@Enumerated(EnumType.STRING)
 	private OperacaoEnum operacao;
 
-	@NotNull
 	@Column(name = "data_extrato", nullable = false)
 	private LocalDateTime dataExtrato;
+
+	public Extrato() {}
 
 	public Extrato(InfoContaDTO infoContaDTO, OperacaoEnum operacaoEnum) {
 		this.agencia = infoContaDTO.getAgencia();
 		this.numero = infoContaDTO.getNumero();
 		this.valor = infoContaDTO.getValor();
 		this.operacao = operacaoEnum;
+	}
+
+	public ExtratoDTO toDTO() {
+		ExtratoDTO extratoDTO = new ExtratoDTO();
+		extratoDTO.setId(this.id);
+		extratoDTO.setDataExtrato(this.dataExtrato);
+		extratoDTO.setAgencia(this.agencia);
+		extratoDTO.setNumero(this.numero);
+		extratoDTO.setOperacao(this.operacao);
+		return extratoDTO;
 	}
 
 	@PrePersist

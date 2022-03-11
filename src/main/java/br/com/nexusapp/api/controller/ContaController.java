@@ -3,26 +3,18 @@ package br.com.nexusapp.api.controller;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import br.com.nexusapp.api.dtos.InfoContaFullDTO;
+import br.com.nexusapp.api.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import br.com.nexusapp.api.dtos.ContaDTO;
-import br.com.nexusapp.api.dtos.ContaFullDTO;
-import br.com.nexusapp.api.dtos.InfoContaDTO;
 import br.com.nexusapp.api.event.RecursoCriadoEvent;
 import br.com.nexusapp.api.service.IContaService;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -104,6 +96,12 @@ public class ContaController {
         @RequestBody @Valid InfoContaFullDTO infoContaFullDTO) {
         contaService.transferir(infoContaFullDTO);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/extratos")
+    public ResponseEntity<List<ExtratoDTO>> extratos(@RequestParam Long idConta) {
+        List<ExtratoDTO> extratoDTOS = contaService.listarExtratos(idConta);
+        return ResponseEntity.ok(extratoDTOS);
     }
 
 }
