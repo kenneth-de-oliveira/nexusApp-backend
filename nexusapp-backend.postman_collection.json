@@ -9,35 +9,6 @@
 			"name": "clientes",
 			"item": [
 				{
-					"name": "cadastrar cliente",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"nome\": \"kenneth\",\n    \"sobrenome\": \"de Oliveira Soares\",\n    \"documento\": \"70943418496\",\n    \"email\": \"kennetholiveira2015@gmail.com\",\n    \"telefone\": \"8386048863\",\n    \"enderecoDTO\": {\n        \"logradouro\": \"Rua josé da Cunha Rego\",\n        \"bairro\": \"novo\",\n        \"numero\": \"1028\",\n        \"cidade\": \"Guarabira\",\n        \"cep\": \"5820000\",\n        \"uf\": \"PB\"\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/clientes/cadastrar",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"clientes",
-								"cadastrar"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "buscar cliente por id",
 					"request": {
 						"method": "GET",
@@ -90,7 +61,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"idCliente\": 1\n}",
+							"raw": "{\n    \"clienteDTO\": {\n        \"nome\": \"kenneth\",\n        \"sobrenome\": \"de Oliveira Soares\",\n        \"documento\": \"70943418496\",\n        \"email\": \"kennetholiveira2015@gmail.com\",\n        \"telefone\": \"8386048863\",\n        \"enderecoDTO\": {\n            \"logradouro\": \"Rua josé da Cunha Rego\",\n            \"bairro\": \"novo\",\n            \"numero\": \"1028\",\n            \"cidade\": \"Guarabira\",\n            \"cep\": \"5820000\",\n            \"uf\": \"PB\"\n        }\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -107,6 +78,32 @@
 							"path": [
 								"contas",
 								"cadastrar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listar extratos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/contas/extratos?idConta=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"contas",
+								"extratos"
+							],
+							"query": [
+								{
+									"key": "idConta",
+									"value": "1"
+								}
 							]
 						}
 					},
@@ -162,7 +159,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/contas/buscar-por-agencia/123-A",
+							"raw": "http://localhost:8080/contas/buscar-por-agencia/20220101",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -171,7 +168,40 @@
 							"path": [
 								"contas",
 								"buscar-por-agencia",
-								"123-A"
+								"20220101"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscar conta por cpf",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idCliente\": 17\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/contas/buscar-por-cpf/70943418496",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"contas",
+								"buscar-por-cpf",
+								"70943418496"
 							]
 						}
 					},
@@ -195,7 +225,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/contas/buscar-por-numero/123",
+							"raw": "http://localhost:8080/contas/buscar-por-numero/20220010000001",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -204,7 +234,94 @@
 							"path": [
 								"contas",
 								"buscar-por-numero",
-								"123"
+								"20220010000001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "depositar",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"agencia\": \"20220101\",\n    \"numero\": \"20220010000001\",\n    \"valor\": \"100\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/contas/depositar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"contas",
+								"depositar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sacar",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"agencia\": \"20220101\",\n    \"numero\": \"20220010000001\",\n    \"valor\": \"10\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/contas/sacar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"contas",
+								"sacar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "transferir",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"agencia\": \"20220101\",\r\n    \"agenciaDestino\": \"20220201\",\r\n    \"numero\": \"20220010000001\",\r\n    \"numeroDestino\" : \"20220020000001\",\r\n    \"valor\": \"10\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/contas/transferir",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"contas",
+								"transferir"
 							]
 						}
 					},
@@ -251,7 +368,7 @@
 					"response": []
 				},
 				{
-					"name": "lista endereços de um clieente pelo cpf",
+					"name": "lista endereços de um cliente pelo cpf",
 					"request": {
 						"method": "GET",
 						"header": [],

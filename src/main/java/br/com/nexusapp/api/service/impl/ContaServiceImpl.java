@@ -6,7 +6,9 @@ import br.com.nexusapp.api.enums.OperacaoEnum;
 import br.com.nexusapp.api.exception.BadRequestException;
 import br.com.nexusapp.api.exception.NotFoundException;
 import br.com.nexusapp.api.model.Conta;
+import br.com.nexusapp.api.model.Extrato;
 import br.com.nexusapp.api.repository.ContaRepository;
+import br.com.nexusapp.api.repository.ExtratoRepository;
 import br.com.nexusapp.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -16,7 +18,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static br.com.nexusapp.api.enums.OperacaoEnum.DEPOSITO;
 import static br.com.nexusapp.api.enums.OperacaoEnum.SAQUE;
@@ -25,6 +29,7 @@ import static br.com.nexusapp.api.enums.OperacaoEnum.SAQUE;
 public class ContaServiceImpl implements IContaService {
 
     private final ContaRepository repository;
+    private final ExtratoRepository extratoRepository;
     private final ISeqContaService iSeqContaService;
     private final ISeqAgenciaService iSeqAgenciaService;
     private final IEnderecoService iEnderecoService;
@@ -37,8 +42,10 @@ public class ContaServiceImpl implements IContaService {
         ISeqContaService iSeqContaService,
         ISeqAgenciaService iSeqAgenciaService,
         IEnderecoService iEnderecoService,
+        ExtratoRepository extratoRepository,
         IClienteService clienteService,
         MessageSource ms) {
+		this.extratoRepository = extratoRepository;
 		this.repository = repository;
         this.iSeqContaService = iSeqContaService;
         this.iSeqAgenciaService = iSeqAgenciaService;
@@ -96,8 +103,24 @@ public class ContaServiceImpl implements IContaService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void transferir(InfoContaFullDTO infoContaDTO) {
-        this.realizaSaque(InfoContaDTO.toInfoContaDTO(infoContaDTO.getAgencia(), infoContaDTO.getNumero(), infoContaDTO.getValor()));
-        this.realizaDeposito(InfoContaDTO.toInfoContaDTO(infoContaDTO.getAgenciaDestino(), infoContaDTO.getNumeroDestino(), infoContaDTO.getValor()));
+    	InfoContaDTO infoContaSaque = InfoContaDTO.toInfoContaDTO(infoContaDTO.getAgencia(), infoContaDTO.getNumero(), infoContaDTO.getValor());
+    	this.registrarMovimentacao(infoContaSaque, SAQUE);    
+        this.realizaSaque(infoContaSaque);
+     
+        InfoContaDTO infoContaDeposito = InfoContaDTO.toInfoContaDTO(infoContaDTO.getAgenciaDestino(), infoContaDTO.getNumeroDestino(), infoContaDTO.getValor());
+        this.registrarMovimentacao(infoContaDeposito, DEPOSITO);
+        this.realizaDeposito(infoContaDeposito);
+    }
+
+    @Override
+    public List<ExtratoDTO> listarExtratos(Long idConta) {
+        Conta conta = repository.findById(idConta).orElseThrow(() -> {
+            throw new NotFoundException(ms.getMessage("conta.consulta.erro",
+        null, LocaleContextHolder.getLocale()));
+        });
+        List<Extrato> allByAgenciaAndNumero = extratoRepository.findByAgenciaAndNumero(conta.getAgencia(), conta.getNumero());
+        return allByAgenciaAndNumero.stream().map(Extrato::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -163,18 +186,19 @@ public class ContaServiceImpl implements IContaService {
     }
 
     private void realizaDeposito(InfoContaDTO infoContaDTO) {
+    	this.registrarMovimentacao(infoContaDTO, DEPOSITO);
         atualizaSaldo(infoContaDTO, repository.findByAgenciaAndNumeroAndStatus(infoContaDTO.getAgencia(), infoContaDTO.getNumero(), ContaStatus.ATIVO)
                 .orElseThrow(() -> new BadRequestException(ms.getMessage("conta.consulta.erro",
                         null, LocaleContextHolder.getLocale()))), DEPOSITO);
     }
 
     private void realizaSaque(InfoContaDTO infoContaDTO) {
+    	this.registrarMovimentacao(infoContaDTO, SAQUE);
         atualizaSaldo(infoContaDTO, repository.findByAgenciaAndNumeroAndStatus(infoContaDTO.getAgencia(), infoContaDTO.getNumero(), ContaStatus.ATIVO)
                 .orElseThrow(() -> new BadRequestException(ms.getMessage("conta.consulta.erro",
                         null, LocaleContextHolder.getLocale()))), SAQUE);
     }
 
-    
     private ContaFullDTO isContaAtiva(Optional<Conta> contaOpt) {
     	if (contaOpt.isEmpty()) {
             throw new NotFoundException(ms.getMessage("conta.consulta.erro",
@@ -182,4 +206,9 @@ public class ContaServiceImpl implements IContaService {
         }
         return getContaMinimumDTO(contaOpt.get());
     }
+
+    private void registrarMovimentacao(InfoContaDTO infoContaDTO, OperacaoEnum operacaoEnum) {
+		extratoRepository.save(new Extrato(infoContaDTO, operacaoEnum));
+    }
+
 }
