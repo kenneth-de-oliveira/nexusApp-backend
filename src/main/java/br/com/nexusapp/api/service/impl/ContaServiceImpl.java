@@ -54,6 +54,11 @@ public class ContaServiceImpl implements IContaService {
         this.ms = ms;
     }
 
+    public ContaFullDTO consultarSaldo(String agencia, String numero) {
+        var contaOpt = repository.findByAgenciaAndNumeroAndStatus(agencia, numero, ContaStatus.ATIVO);
+        return this.isContaAtiva(contaOpt);
+    }
+
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ContaFullDTO cadastrar(ContaDTO contaDTO) {

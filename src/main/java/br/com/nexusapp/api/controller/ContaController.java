@@ -33,6 +33,15 @@ public class ContaController {
     }
 
     @ResponseBody
+    @GetMapping("/consultar-saldo/{agencia}/{numero}")
+    public ResponseEntity<ContaFullDTO> consultarSaldo(
+        @PathVariable final String agencia,
+        @PathVariable final String numero){
+        return ResponseEntity.ok(
+        contaService.consultarSaldo(agencia, numero));
+    }
+
+    @ResponseBody
     @GetMapping("/buscar-por-numero/{numero}")
     public ResponseEntity<ContaFullDTO> buscarContaPorNumero(
         @PathVariable final String numero){

@@ -84,6 +84,40 @@
 					"response": []
 				},
 				{
+					"name": "consultar saldo por agência e número",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idCliente\": 17\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/contas/consultar-saldo/20220101/20220010000001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"contas",
+								"consultar-saldo",
+								"20220101",
+								"20220010000001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "listar extratos",
 					"request": {
 						"method": "GET",
@@ -247,7 +281,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"agencia\": \"20220101\",\n    \"numero\": \"20220010000001\",\n    \"valor\": \"100\"\n}",
+							"raw": "{\n    \"agencia\": \"202201011\",\n    \"numero\": \"20220010000001\",\n    \"valor\": \"100\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
