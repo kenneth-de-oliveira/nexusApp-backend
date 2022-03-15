@@ -5,6 +5,7 @@ import br.com.nexusapp.api.dtos.*;
 import java.util.List;
 
 public interface IContaService {
+    ContaFullDTO consultarSaldo(String agencia, String numero);
 	ContaFullDTO buscarContaPorCpf(String cpf);
     ContaFullDTO cadastrar(ContaDTO contaDTO);
     ContaFullDTO buscarContaPorId(Long id);
