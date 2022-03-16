@@ -5,11 +5,16 @@ import br.com.nexusapp.api.model.Cliente;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
 public class ClienteFullDTO {
     private Long id;
+    @NotEmpty(message = "{campo.username.obrigatorio}")
+    private String username;
+    @NotEmpty(message = "{campo.password.obrigatorio}")
+    private String password;
     @NotBlank private String nome;
     @NotBlank private String sobrenome;
     @CPF @NotBlank private String documento;
@@ -26,6 +31,8 @@ public class ClienteFullDTO {
 
     public ClienteFullDTO(Cliente cliente) {
         this.setCreatedAt(cliente.getCreatedAt());
+        this.setPassword(cliente.getPassword());
+        this.setUsername(cliente.getUsername());
         this.setUpdatedAt(cliente.getUpdatedAt());
         this.setDocumento(cliente.getDocumento());
         this.setTelefone(cliente.getTelefone());
@@ -40,6 +47,8 @@ public class ClienteFullDTO {
         Cliente cliente = new Cliente();
         cliente.setCreatedAt(this.createdAt);
         cliente.setUpdatedAt(this.updatedAt);
+        cliente.setPassword(this.getPassword());
+        cliente.setUsername(this.getUsername());
         cliente.setDocumento(this.documento);
         cliente.setTelefone(this.telefone);
         cliente.setEmail(this.email);
@@ -48,6 +57,22 @@ public class ClienteFullDTO {
         cliente.setStatus(this.status);
         cliente.setNome(this.nome);
         return cliente;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public EnderecoDTO getEnderecoDTO() {

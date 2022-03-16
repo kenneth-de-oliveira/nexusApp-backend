@@ -5,14 +5,20 @@ import br.com.nexusapp.api.enums.ContaStatus;
 import br.com.nexusapp.api.enums.OperacaoEnum;
 import br.com.nexusapp.api.exception.BadRequestException;
 import br.com.nexusapp.api.exception.NotFoundException;
+import br.com.nexusapp.api.model.Cliente;
 import br.com.nexusapp.api.model.Conta;
 import br.com.nexusapp.api.model.Extrato;
+import br.com.nexusapp.api.repository.ClienteRepository;
 import br.com.nexusapp.api.repository.ContaRepository;
 import br.com.nexusapp.api.repository.ExtratoRepository;
 import br.com.nexusapp.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +30,13 @@ import java.util.stream.Collectors;
 
 import static br.com.nexusapp.api.enums.OperacaoEnum.DEPOSITO;
 import static br.com.nexusapp.api.enums.OperacaoEnum.SAQUE;
+import static br.com.nexusapp.api.enums.RoleStatus.USER;
 
 @Service
 public class ContaServiceImpl implements IContaService {
 
     private final ContaRepository repository;
+    private final ClienteRepository clienteRepository;
     private final ExtratoRepository extratoRepository;
     private final ISeqContaService iSeqContaService;
     private final ISeqAgenciaService iSeqAgenciaService;
@@ -39,13 +47,15 @@ public class ContaServiceImpl implements IContaService {
     @Autowired
     public ContaServiceImpl(
         ContaRepository repository,
+        ClienteRepository clienteRepository,
         ISeqContaService iSeqContaService,
         ISeqAgenciaService iSeqAgenciaService,
         IEnderecoService iEnderecoService,
         ExtratoRepository extratoRepository,
         IClienteService clienteService,
         MessageSource ms) {
-		this.extratoRepository = extratoRepository;
+        this.clienteRepository = clienteRepository;
+        this.extratoRepository = extratoRepository;
 		this.repository = repository;
         this.iSeqContaService = iSeqContaService;
         this.iSeqAgenciaService = iSeqAgenciaService;
@@ -54,6 +64,7 @@ public class ContaServiceImpl implements IContaService {
         this.ms = ms;
     }
 
+    @Override
     public ContaFullDTO consultarSaldo(String agencia, String numero) {
         var contaOpt = repository.findByAgenciaAndNumeroAndStatus(agencia, numero, ContaStatus.ATIVO);
         return this.isContaAtiva(contaOpt);
@@ -62,13 +73,12 @@ public class ContaServiceImpl implements IContaService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ContaFullDTO cadastrar(ContaDTO contaDTO) {
-
         ClienteDTO clienteDTO = cadastraClienteConta(contaDTO);
 
         var conta = contaDTO.toModel();
         conta.setNumero(iSeqContaService.gerarNumeroContaCliente(clienteDTO.toModel()));
         conta.setAgencia(iSeqAgenciaService.gerarNumeroAgenciaCliente(clienteDTO.toModel()));
-        conta.setCliente(clienteDTO.toModel());
+        conta.setCliente(getClientePasswordEncoded(clienteDTO));
         repository.save(conta);
 
         return toMinimumDTO(clienteDTO, conta);
@@ -109,9 +119,9 @@ public class ContaServiceImpl implements IContaService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void transferir(InfoContaFullDTO infoContaDTO) {
     	InfoContaDTO infoContaSaque = InfoContaDTO.toInfoContaDTO(infoContaDTO.getAgencia(), infoContaDTO.getNumero(), infoContaDTO.getValor());
-    	this.registrarMovimentacao(infoContaSaque, SAQUE);    
+    	this.registrarMovimentacao(infoContaSaque, SAQUE);
         this.realizaSaque(infoContaSaque);
-     
+
         InfoContaDTO infoContaDeposito = InfoContaDTO.toInfoContaDTO(infoContaDTO.getAgenciaDestino(), infoContaDTO.getNumeroDestino(), infoContaDTO.getValor());
         this.registrarMovimentacao(infoContaDeposito, DEPOSITO);
         this.realizaDeposito(infoContaDeposito);
@@ -132,6 +142,22 @@ public class ContaServiceImpl implements IContaService {
     public ContaFullDTO buscarContaPorNumero(String numero) {
         Optional<Conta> contaOpt = repository.findByNumero(numero);
         return isContaAtiva(contaOpt);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        var message = ms.getMessage("login-usuario.error",
+                null, LocaleContextHolder.getLocale());
+
+        var cliente = clienteRepository
+            .findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException(message));
+
+        return User.builder()
+                .username(cliente.getUsername())
+                .password(cliente.getPassword())
+                .roles(String.valueOf(USER))
+                .build();
     }
 
     private ContaMinimumDTO toMinimumDTO(ClienteDTO clienteDTO, Conta conta) {
@@ -214,6 +240,14 @@ public class ContaServiceImpl implements IContaService {
 
     private void registrarMovimentacao(InfoContaDTO infoContaDTO, OperacaoEnum operacaoEnum) {
 		extratoRepository.save(new Extrato(infoContaDTO, operacaoEnum));
+    }
+
+    private Cliente getClientePasswordEncoded(ClienteDTO clienteDTO) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        Cliente cliente = clienteDTO.toModel();
+        String passwordEncoded = bCryptPasswordEncoder.encode(cliente.getPassword());
+        cliente.setPassword(passwordEncoded);
+        return cliente;
     }
 
 }

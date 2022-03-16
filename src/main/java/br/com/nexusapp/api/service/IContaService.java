@@ -1,10 +1,11 @@
 package br.com.nexusapp.api.service;
 
 import br.com.nexusapp.api.dtos.*;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
-public interface IContaService {
+public interface IContaService extends UserDetailsService {
     ContaFullDTO consultarSaldo(String agencia, String numero);
 	ContaFullDTO buscarContaPorCpf(String cpf);
     ContaFullDTO cadastrar(ContaDTO contaDTO);

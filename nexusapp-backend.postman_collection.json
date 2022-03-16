@@ -61,7 +61,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"clienteDTO\": {\n        \"nome\": \"kenneth\",\n        \"sobrenome\": \"de Oliveira Soares\",\n        \"documento\": \"70943418496\",\n        \"email\": \"kennetholiveira2015@gmail.com\",\n        \"telefone\": \"8386048863\",\n        \"enderecoDTO\": {\n            \"logradouro\": \"Rua josé da Cunha Rego\",\n            \"bairro\": \"novo\",\n            \"numero\": \"1028\",\n            \"cidade\": \"Guarabira\",\n            \"cep\": \"5820000\",\n            \"uf\": \"PB\"\n        }\n    }\n}",
+							"raw": "{\n    \"clienteDTO\": {\n        \"username\": \"koliveiras\",\n        \"password\": \"12345678\",\n        \"nome\": \"kenneth\",\n        \"sobrenome\": \"de Oliveira Soares\",\n        \"documento\": \"70943418496\",\n        \"email\": \"kennetholiveira2015@gmail.com\",\n        \"telefone\": \"8386048863\",\n        \"enderecoDTO\": {\n            \"logradouro\": \"Rua josé da Cunha Rego\",\n            \"bairro\": \"novo\",\n            \"numero\": \"1028\",\n            \"cidade\": \"Guarabira\",\n            \"cep\": \"5820000\",\n            \"uf\": \"PB\"\n        }\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -69,15 +69,15 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/contas/cadastrar",
+							"raw": "http://localhost:8080/publico/contas",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"contas",
-								"cadastrar"
+								"publico",
+								"contas"
 							]
 						}
 					},
@@ -149,6 +149,16 @@
 						"disableBodyPruning": true
 					},
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDc0MDAyMDUsInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiNDVlYWNjNjAtN2E5NC00ZjlhLTlmNTItZjMwYjljODlkZmU3IiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.3F6oOF_0gCEBIg5IQu9biz-0I139D1esufunj0EiN8s",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"body": {
@@ -181,6 +191,16 @@
 						"disableBodyPruning": true
 					},
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDczOTkyNDUsInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiZDQ2ZjVkM2ItNWQwOC00NDZiLWE2OTYtNTAyOTBjOGY1NzFmIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.GMnwujq8Wf2M4kj7QXiNQyToTuqFaQRBYx8qDuS6kJQ",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"body": {
@@ -210,21 +230,9 @@
 				},
 				{
 					"name": "buscar conta por cpf",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"idCliente\": 17\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
 							"raw": "http://localhost:8080/contas/buscar-por-cpf/70943418496",
 							"protocol": "http",
@@ -417,6 +425,66 @@
 								"enderecos",
 								"lista-por-cpf",
 								"70943418496"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "oauth",
+			"item": [
+				{
+					"name": "gerar token",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "@321",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "my-angular-app",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "koliveiras",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345678",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/oauth/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"oauth",
+								"token"
 							]
 						}
 					},

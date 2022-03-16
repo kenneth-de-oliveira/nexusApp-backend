@@ -5,6 +5,7 @@ import br.com.nexusapp.api.dtos.EnderecoDTO;
 import br.com.nexusapp.api.enums.ClienteStatus;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -20,6 +21,16 @@ public class Cliente implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cliente_seq")
     private Long id;
+
+    @NotNull
+    @Size(min = 3, max = 150)
+    @Column(unique = true, nullable = false)
+    private String username;
+
+    @NotNull
+    @Size(min = 8, max = 150)
+    @Column(nullable = false)
+    private String password;
 
     @NotNull
     @Size(min = 3, max = 150)
@@ -60,6 +71,22 @@ public class Cliente implements Serializable {
         status = ClienteStatus.of(1);
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Long getId() {
@@ -137,6 +164,8 @@ public class Cliente implements Serializable {
     public ClienteDTO toDTO() {
         ClienteDTO clienteDTO = new ClienteDTO();
         clienteDTO.setCreatedAt(this.createdAt);
+        clienteDTO.setPassword(this.password);
+        clienteDTO.setUsername(this.username);
         clienteDTO.setUpdatedAt(this.updatedAt);
         clienteDTO.setDocumento(this.documento);
         clienteDTO.setEmail(this.email);
@@ -153,6 +182,8 @@ public class Cliente implements Serializable {
         clienteDTO.setCreatedAt(this.createdAt);
         clienteDTO.setUpdatedAt(this.updatedAt);
         clienteDTO.setDocumento(this.documento);
+        clienteDTO.setPassword(this.password);
+        clienteDTO.setUsername(this.username);
         clienteDTO.setEmail(this.email);
         clienteDTO.setId(this.id);
         clienteDTO.setTelefone(this.telefone);
@@ -165,7 +196,10 @@ public class Cliente implements Serializable {
 
     @Override
     public String toString() {
-        return "Cliente{" + "id=" + id +
+        return "Cliente{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
                 ", nome='" + nome + '\'' +
                 ", documento='" + documento + '\'' +
                 ", sobrenome='" + sobrenome + '\'' +
