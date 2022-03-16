@@ -1,15 +1,24 @@
 package br.com.nexusapp.api.model;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import br.com.nexusapp.api.dtos.ClienteDTO;
 import br.com.nexusapp.api.dtos.EnderecoDTO;
 import br.com.nexusapp.api.enums.ClienteStatus;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tb_cliente")
@@ -22,15 +31,8 @@ public class Cliente implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cliente_seq")
     private Long id;
 
-    @NotNull
-    @Size(min = 3, max = 150)
-    @Column(unique = true, nullable = false)
-    private String username;
-
-    @NotNull
-    @Size(min = 8, max = 150)
-    @Column(nullable = false)
-    private String password;
+    @Column(name = "usuario_id", nullable = false)
+    private Long idUsuario;
 
     @NotNull
     @Size(min = 3, max = 150)
@@ -71,22 +73,6 @@ public class Cliente implements Serializable {
         status = ClienteStatus.of(1);
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public Long getId() {
@@ -159,13 +145,19 @@ public class Cliente implements Serializable {
 
     public void setStatus(ClienteStatus status) {
         this.status = status;
-    }
+    }	
 
-    public ClienteDTO toDTO() {
+  	public Long getIdUsuario() {
+		return idUsuario;
+	}
+
+	public void setIdUsuario(Long idUsuario) {
+		this.idUsuario = idUsuario;
+	}
+
+	public ClienteDTO toDTO() {
         ClienteDTO clienteDTO = new ClienteDTO();
         clienteDTO.setCreatedAt(this.createdAt);
-        clienteDTO.setPassword(this.password);
-        clienteDTO.setUsername(this.username);
         clienteDTO.setUpdatedAt(this.updatedAt);
         clienteDTO.setDocumento(this.documento);
         clienteDTO.setEmail(this.email);
@@ -182,8 +174,6 @@ public class Cliente implements Serializable {
         clienteDTO.setCreatedAt(this.createdAt);
         clienteDTO.setUpdatedAt(this.updatedAt);
         clienteDTO.setDocumento(this.documento);
-        clienteDTO.setPassword(this.password);
-        clienteDTO.setUsername(this.username);
         clienteDTO.setEmail(this.email);
         clienteDTO.setId(this.id);
         clienteDTO.setTelefone(this.telefone);
@@ -193,25 +183,15 @@ public class Cliente implements Serializable {
         clienteDTO.setEnderecoDTO(enderecoDTO);
         return clienteDTO;
     }
+    
+	@Override
+	public String toString() {
+		return "Cliente [id=" + id + ", idUsuario=" + idUsuario + ", nome=" + nome + ", documento=" + documento
+				+ ", sobrenome=" + sobrenome + ", email=" + email + ", telefone=" + telefone + ", createdAt="
+				+ createdAt + ", updatedAt=" + updatedAt + ", status=" + status + "]";
+	}
 
-    @Override
-    public String toString() {
-        return "Cliente{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", nome='" + nome + '\'' +
-                ", documento='" + documento + '\'' +
-                ", sobrenome='" + sobrenome + '\'' +
-                ", email='" + email + '\'' +
-                ", telefone='" + telefone + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", status=" + status +
-                '}';
-    }
-
-    @Override
+	@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Cliente)) return false;

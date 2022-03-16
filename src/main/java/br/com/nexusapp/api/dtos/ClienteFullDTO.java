@@ -1,38 +1,39 @@
 package br.com.nexusapp.api.dtos;
 
-import br.com.nexusapp.api.enums.ClienteStatus;
-import br.com.nexusapp.api.model.Cliente;
-import org.hibernate.validator.constraints.br.CPF;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.br.CPF;
+
+import br.com.nexusapp.api.enums.ClienteStatus;
+import br.com.nexusapp.api.model.Cliente;
+
 public class ClienteFullDTO {
-    private Long id;
-    @NotEmpty(message = "{campo.username.obrigatorio}")
-    private String username;
-    @NotEmpty(message = "{campo.password.obrigatorio}")
-    private String password;
-    @NotBlank private String nome;
-    @NotBlank private String sobrenome;
-    @CPF @NotBlank private String documento;
-    @NotBlank private String email;
-    @Pattern(regexp = "^[0-9]{2}([0-9]{8}|[0-9]{9})")
-    @NotBlank private String telefone;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private ClienteStatus status;
-    private EnderecoDTO enderecoDTO;
+	private Long id;
+	private UsuarioDTO usuarioDTO;
+	@NotBlank
+	private String nome;
+	@NotBlank
+	private String sobrenome;
+	@CPF
+	@NotBlank
+	private String documento;
+	@NotBlank
+	private String email;
+	@Pattern(regexp = "^[0-9]{2}([0-9]{8}|[0-9]{9})")
+	@NotBlank
+	private String telefone;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
+	private ClienteStatus status;
+	private EnderecoDTO enderecoDTO;
 
-    public ClienteFullDTO() {
-    }
+	public ClienteFullDTO() {}
 
-    public ClienteFullDTO(Cliente cliente) {
+	public ClienteFullDTO(Cliente cliente) {
         this.setCreatedAt(cliente.getCreatedAt());
-        this.setPassword(cliente.getPassword());
-        this.setUsername(cliente.getUsername());
         this.setUpdatedAt(cliente.getUpdatedAt());
         this.setDocumento(cliente.getDocumento());
         this.setTelefone(cliente.getTelefone());
@@ -43,115 +44,105 @@ public class ClienteFullDTO {
         this.setNome(cliente.getNome());
     }
 
-    public Cliente toModel() {
-        Cliente cliente = new Cliente();
-        cliente.setCreatedAt(this.createdAt);
-        cliente.setUpdatedAt(this.updatedAt);
-        cliente.setPassword(this.getPassword());
-        cliente.setUsername(this.getUsername());
-        cliente.setDocumento(this.documento);
-        cliente.setTelefone(this.telefone);
-        cliente.setEmail(this.email);
-        cliente.setId(this.id);
-        cliente.setSobrenome(this.sobrenome);
-        cliente.setStatus(this.status);
-        cliente.setNome(this.nome);
-        return cliente;
-    }
+	public Cliente toModel() {
+		Cliente cliente = new Cliente();
+		cliente.setCreatedAt(this.createdAt);
+		cliente.setUpdatedAt(this.updatedAt);
+		cliente.setDocumento(this.documento);
+		cliente.setTelefone(this.telefone);
+		cliente.setEmail(this.email);
+		cliente.setId(this.id);
+		cliente.setSobrenome(this.sobrenome);
+		cliente.setStatus(this.status);
+		cliente.setNome(this.nome);
+		return cliente;
+	}
+	
+	public UsuarioDTO getUsuarioDTO() {
+		return usuarioDTO;
+	}
 
-    public String getUsername() {
-        return username;
-    }
+	public void setUsuarioDTO(UsuarioDTO usuarioDTO) {
+		this.usuarioDTO = usuarioDTO;
+	}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	public EnderecoDTO getEnderecoDTO() {
+		return enderecoDTO;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public void setEnderecoDTO(EnderecoDTO enderecoDTO) {
+		this.enderecoDTO = enderecoDTO;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public EnderecoDTO getEnderecoDTO() {
-        return enderecoDTO;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setEnderecoDTO(EnderecoDTO enderecoDTO) {
-        this.enderecoDTO = enderecoDTO;
-    }
+	public String getNome() {
+		return nome;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public String getSobrenome() {
+		return sobrenome;
+	}
 
-    public String getNome() {
-        return nome;
-    }
+	public void setSobrenome(String sobrenome) {
+		this.sobrenome = sobrenome;
+	}
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+	public String getDocumento() {
+		return documento;
+	}
 
-    public String getSobrenome() {
-        return sobrenome;
-    }
+	public void setDocumento(String documento) {
+		this.documento = documento;
+	}
 
-    public void setSobrenome(String sobrenome) {
-        this.sobrenome = sobrenome;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public String getDocumento() {
-        return documento;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setDocumento(String documento) {
-        this.documento = documento;
-    }
+	public String getTelefone() {
+		return telefone;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
 
-    public String getTelefone() {
-        return telefone;
-    }
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
 
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+	public ClienteStatus getStatus() {
+		return status;
+	}
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public ClienteStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ClienteStatus status) {
-        this.status = status;
-    }
+	public void setStatus(ClienteStatus status) {
+		this.status = status;
+	}
 }

@@ -1,42 +1,51 @@
 package br.com.nexusapp.api.service.impl;
 
-import br.com.nexusapp.api.dtos.*;
-import br.com.nexusapp.api.enums.ContaStatus;
-import br.com.nexusapp.api.enums.OperacaoEnum;
-import br.com.nexusapp.api.exception.BadRequestException;
-import br.com.nexusapp.api.exception.NotFoundException;
-import br.com.nexusapp.api.model.Cliente;
-import br.com.nexusapp.api.model.Conta;
-import br.com.nexusapp.api.model.Extrato;
-import br.com.nexusapp.api.repository.ClienteRepository;
-import br.com.nexusapp.api.repository.ContaRepository;
-import br.com.nexusapp.api.repository.ExtratoRepository;
-import br.com.nexusapp.api.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import static br.com.nexusapp.api.enums.OperacaoEnum.DEPOSITO;
+import static br.com.nexusapp.api.enums.OperacaoEnum.SAQUE;
+import static br.com.nexusapp.api.enums.RoleStatus.USER;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static br.com.nexusapp.api.enums.OperacaoEnum.DEPOSITO;
-import static br.com.nexusapp.api.enums.OperacaoEnum.SAQUE;
-import static br.com.nexusapp.api.enums.RoleStatus.USER;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import br.com.nexusapp.api.dtos.ClienteDTO;
+import br.com.nexusapp.api.dtos.ContaDTO;
+import br.com.nexusapp.api.dtos.ContaFullDTO;
+import br.com.nexusapp.api.dtos.ContaMinimumDTO;
+import br.com.nexusapp.api.dtos.ExtratoDTO;
+import br.com.nexusapp.api.dtos.InfoContaDTO;
+import br.com.nexusapp.api.dtos.InfoContaFullDTO;
+import br.com.nexusapp.api.enums.ContaStatus;
+import br.com.nexusapp.api.enums.OperacaoEnum;
+import br.com.nexusapp.api.exception.BadRequestException;
+import br.com.nexusapp.api.exception.NotFoundException;
+import br.com.nexusapp.api.model.Conta;
+import br.com.nexusapp.api.model.Extrato;
+import br.com.nexusapp.api.repository.ContaRepository;
+import br.com.nexusapp.api.repository.ExtratoRepository;
+import br.com.nexusapp.api.repository.UsuarioRepository;
+import br.com.nexusapp.api.service.IClienteService;
+import br.com.nexusapp.api.service.IContaService;
+import br.com.nexusapp.api.service.IEnderecoService;
+import br.com.nexusapp.api.service.ISeqAgenciaService;
+import br.com.nexusapp.api.service.ISeqContaService;
 
 @Service
 public class ContaServiceImpl implements IContaService {
 
     private final ContaRepository repository;
-    private final ClienteRepository clienteRepository;
+    private final UsuarioRepository usuarioRepository;
     private final ExtratoRepository extratoRepository;
     private final ISeqContaService iSeqContaService;
     private final ISeqAgenciaService iSeqAgenciaService;
@@ -47,14 +56,14 @@ public class ContaServiceImpl implements IContaService {
     @Autowired
     public ContaServiceImpl(
         ContaRepository repository,
-        ClienteRepository clienteRepository,
+        UsuarioRepository usuarioRepository,
         ISeqContaService iSeqContaService,
         ISeqAgenciaService iSeqAgenciaService,
         IEnderecoService iEnderecoService,
         ExtratoRepository extratoRepository,
         IClienteService clienteService,
         MessageSource ms) {
-        this.clienteRepository = clienteRepository;
+        this.usuarioRepository = usuarioRepository;
         this.extratoRepository = extratoRepository;
 		this.repository = repository;
         this.iSeqContaService = iSeqContaService;
@@ -78,7 +87,9 @@ public class ContaServiceImpl implements IContaService {
         var conta = contaDTO.toModel();
         conta.setNumero(iSeqContaService.gerarNumeroContaCliente(clienteDTO.toModel()));
         conta.setAgencia(iSeqAgenciaService.gerarNumeroAgenciaCliente(clienteDTO.toModel()));
-        conta.setCliente(getClientePasswordEncoded(clienteDTO));
+        
+        conta.setCliente(clienteDTO.toModel());
+        
         repository.save(conta);
 
         return toMinimumDTO(clienteDTO, conta);
@@ -149,13 +160,13 @@ public class ContaServiceImpl implements IContaService {
         var message = ms.getMessage("login-usuario.error",
                 null, LocaleContextHolder.getLocale());
 
-        var cliente = clienteRepository
+        var usuario = usuarioRepository
             .findByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException(message));
 
         return User.builder()
-                .username(cliente.getUsername())
-                .password(cliente.getPassword())
+                .username(usuario.getUsername())
+                .password(usuario.getPassword())
                 .roles(String.valueOf(USER))
                 .build();
     }
@@ -240,14 +251,6 @@ public class ContaServiceImpl implements IContaService {
 
     private void registrarMovimentacao(InfoContaDTO infoContaDTO, OperacaoEnum operacaoEnum) {
 		extratoRepository.save(new Extrato(infoContaDTO, operacaoEnum));
-    }
-
-    private Cliente getClientePasswordEncoded(ClienteDTO clienteDTO) {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        Cliente cliente = clienteDTO.toModel();
-        String passwordEncoded = bCryptPasswordEncoder.encode(cliente.getPassword());
-        cliente.setPassword(passwordEncoded);
-        return cliente;
     }
 
 }
