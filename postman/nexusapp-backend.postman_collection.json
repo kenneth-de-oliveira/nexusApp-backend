@@ -81,7 +81,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"clienteDTO\": {\n        \"usuarioDTO\": {\n            \"username\": \"koliveiras\",\n            \"password\": \"12345678\"\n        },\n        \"nome\": \"kenneth\",\n        \"sobrenome\": \"de Oliveira Soares\",\n        \"documento\": \"70943418496\",\n        \"email\": \"kennetholiveira2015@gmail.com\",\n        \"telefone\": \"8386048863\",\n        \"enderecoDTO\": {\n            \"logradouro\": \"Rua josé da Cunha Rego\",\n            \"bairro\": \"novo\",\n            \"numero\": \"1028\",\n            \"cidade\": \"Guarabira\",\n            \"cep\": \"5820000\",\n            \"uf\": \"PB\"\n        }\n    }\n}",
+							"raw": "{\n    \"clienteDTO\": {\n        \"usuarioDTO\": {\n            \"username\": \"paulo\",\n            \"password\": \"12345678\"\n        },\n        \"nome\": \"José\",\n        \"sobrenome\": \"da Silva Soares\",\n        \"documento\": \"45962763076\",\n        \"email\": \"mario1234@outlook.com\",\n        \"telefone\": \"3128669356\",\n        \"enderecoDTO\": {\n            \"logradouro\": \"Rua josé da Cunha Rego\",\n            \"bairro\": \"novo\",\n            \"numero\": \"1028\",\n            \"cidade\": \"Guarabira\",\n            \"cep\": \"5820000\",\n            \"uf\": \"PB\"\n        }\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -155,7 +155,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDc0NTA3ODQsInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiZDlhZDgyY2UtOGNiMi00MTYzLWE2MTYtOGNjZTJlOGU1ODIxIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.CXSk71JhhaOo1YKVT5jzw6JaD1zfa-UI6Vw281eeu4c",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDgwMDA3ODksInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiYmI2YWUyZjItZGY3Ny00ODQ4LTk1NDctZjhkNWFjMTk0NzNjIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.bUB0hDoh9MJNI-KWLFZWkUIjj6d1LhOPWe_g3f6P2sI",
 									"type": "string"
 								}
 							]
@@ -194,7 +194,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDc0MDAyMDUsInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiNDVlYWNjNjAtN2E5NC00ZjlhLTlmNTItZjMwYjljODlkZmU3IiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.3F6oOF_0gCEBIg5IQu9biz-0I139D1esufunj0EiN8s",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDc5OTk2MjksInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiZTE0YjdjY2UtZjUxNC00ODU5LTgyMDItZTcyOGRjMGJlZmYwIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.eR2XECTNs3e0ef3Fx7DNiCzj5FTJkgmuDveFFAJTUs0",
 									"type": "string"
 								}
 							]
@@ -220,6 +220,37 @@
 							"path": [
 								"contas",
 								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscar conta por nome usuario",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDc5MTM3MDksInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiYTA2ZDEzOTAtY2ViOC00ZTlkLTg0MjktYmU2YjM4MTBjNTRmIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.8r0lyG_SwEfCltum59P-CO050aaHSmxgmidRyBFeQfw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/contas/buscar-por-usuario/koliveiras",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"contas",
+								"buscar-por-usuario",
+								"koliveiras"
 							]
 						}
 					},
@@ -276,7 +307,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDc0NTA3ODQsInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiZDlhZDgyY2UtOGNiMi00MTYzLWE2MTYtOGNjZTJlOGU1ODIxIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.CXSk71JhhaOo1YKVT5jzw6JaD1zfa-UI6Vw281eeu4c",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDc4ODY3MDIsInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiNGE3YmE0ZDktNTgzMy00NzJlLThjYTItM2RlZGM4MjgyY2VjIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.mVgywWSCTTNsXRIijoGc-dCClNPHpMavcBwIVA_rIRs",
 									"type": "string"
 								}
 							]
@@ -284,7 +315,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/contas/buscar-por-cpf/70943418496",
+							"raw": "http://localhost:8080/contas/buscar-por-cpf/30550479074",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -293,7 +324,7 @@
 							"path": [
 								"contas",
 								"buscar-por-cpf",
-								"70943418496"
+								"30550479074"
 							]
 						}
 					},
@@ -359,7 +390,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"agencia\": \"202201011\",\n    \"numero\": \"20220010000001\",\n    \"valor\": \"100\"\n}",
+							"raw": "{\n    \"agencia\": \"20220101\",\n    \"numero\": \"20220010000001\",\n    \"valor\": \"500\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -437,7 +468,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"agencia\": \"20220101\",\r\n    \"agenciaDestino\": \"20220201\",\r\n    \"numero\": \"20220010000001\",\r\n    \"numeroDestino\" : \"20220020000001\",\r\n    \"valor\": \"10\"\r\n}",
+							"raw": "{\r\n    \"agencia\": \"20220101\",\r\n    \"agenciaDestino\": \"20220301\",\r\n    \"numero\": \"20220010000001\",\r\n    \"numeroDestino\" : \"20220030000001\",\r\n    \"valor\": \"100\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -543,10 +574,10 @@
 			]
 		},
 		{
-			"name": "oauth",
+			"name": "auth",
 			"item": [
 				{
-					"name": "gerar token",
+					"name": "token",
 					"request": {
 						"auth": {
 							"type": "basic",
