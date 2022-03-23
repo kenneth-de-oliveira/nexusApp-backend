@@ -42,6 +42,14 @@ public class ContaController {
         return ResponseEntity.ok(
         contaService.buscarContaPorNumero(numero));
     }
+
+    @ResponseBody
+    @GetMapping("/buscar-por-usuario/{nomeUsuario}")
+    public ResponseEntity<ContaFullDTO> buscarContaPorNomeUsuario(
+        @PathVariable final String nomeUsuario){
+        return ResponseEntity.ok(
+        contaService.buscarContaPorNomeUsuario(nomeUsuario));
+    }
     
     @ResponseBody
     @GetMapping("/buscar-por-cpf/{cpf}")

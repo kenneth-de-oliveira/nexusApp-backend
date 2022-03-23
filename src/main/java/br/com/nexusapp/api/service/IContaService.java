@@ -16,4 +16,5 @@ public interface IContaService extends UserDetailsService {
     void sacar(InfoContaDTO infoContaDTO);
     void transferir(InfoContaFullDTO infoContaFullDTO);
     List<ExtratoDTO> listarExtratos(Long idConta);
+    ContaFullDTO buscarContaPorNomeUsuario(String nomeUsuario);
 }
