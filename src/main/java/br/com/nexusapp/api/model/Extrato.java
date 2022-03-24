@@ -45,7 +45,7 @@ public class Extrato implements Serializable {
 	}
 
 	public ExtratoDTO toDTO() {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 		ExtratoDTO extratoDTO = new ExtratoDTO();
 		extratoDTO.setId(this.id);
 		extratoDTO.setDataExtrato(formatter.format(this.dataExtrato));
