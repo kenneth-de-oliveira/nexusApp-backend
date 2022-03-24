@@ -148,6 +148,38 @@
 					"response": []
 				},
 				{
+					"name": "baixar extrato em pdf",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDgxMzUxMzYsInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiYTQwYWExY2MtZTY2OS00MGIyLThiNTEtNzkwYzJmMGExMTU3IiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.h2NtBztWd7c7kt9yXqPiJ7WynlB_u_O0eO6s2RhMPVI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/contas/3/extratos/pdf",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"contas",
+								"3",
+								"extratos",
+								"pdf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "listar extratos",
 					"request": {
 						"auth": {
@@ -155,7 +187,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDgwMDA3ODksInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiYmI2YWUyZjItZGY3Ny00ODQ4LTk1NDctZjhkNWFjMTk0NzNjIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.bUB0hDoh9MJNI-KWLFZWkUIjj6d1LhOPWe_g3f6P2sI",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDgxMzEyMzAsInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiZDczNzA2MTQtZmM3Ni00NjQ3LTgyMjItOWViMDAyNmEwOGJiIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.v1dnJ53eDOZAaWYw2sdXMydMSEv8cpDYuGnskAchl4Q",
 									"type": "string"
 								}
 							]
@@ -194,7 +226,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDc5OTk2MjksInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiZTE0YjdjY2UtZjUxNC00ODU5LTgyMDItZTcyOGRjMGJlZmYwIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.eR2XECTNs3e0ef3Fx7DNiCzj5FTJkgmuDveFFAJTUs0",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDgwOTU1NjEsInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiNDliMGRmN2QtM2Q4My00Nzg2LWFhNTMtMGQzYjZiZDI5YjQ2IiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.eMtWWdDbaUCoZ4jY8w3S7Uuzq19Pyn9ScJXU7nnKJHc",
 									"type": "string"
 								}
 							]

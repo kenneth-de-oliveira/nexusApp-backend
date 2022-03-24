@@ -5,6 +5,7 @@ import br.com.nexusapp.api.enums.ContaStatus;
 import br.com.nexusapp.api.enums.OperacaoEnum;
 import br.com.nexusapp.api.exception.BadRequestException;
 import br.com.nexusapp.api.exception.NotFoundException;
+import br.com.nexusapp.api.exception.ServiceUnavailableException;
 import br.com.nexusapp.api.model.Conta;
 import br.com.nexusapp.api.model.Extrato;
 import br.com.nexusapp.api.repository.ClienteRepository;
@@ -12,6 +13,12 @@ import br.com.nexusapp.api.repository.ContaRepository;
 import br.com.nexusapp.api.repository.ExtratoRepository;
 import br.com.nexusapp.api.repository.UsuarioRepository;
 import br.com.nexusapp.api.service.*;
+import br.com.nexusapp.api.util.JasperUtil;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -22,10 +29,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static br.com.nexusapp.api.enums.OperacaoEnum.DEPOSITO;
@@ -59,12 +66,19 @@ public class ContaServiceImpl implements IContaService {
         this.clienteRepository = clienteRepository;
         this.usuarioRepository = usuarioRepository;
         this.extratoRepository = extratoRepository;
-		this.repository = repository;
+        this.repository = repository;
         this.iSeqContaService = iSeqContaService;
         this.iSeqAgenciaService = iSeqAgenciaService;
         this.iEnderecoService = iEnderecoService;
         this.clienteService = clienteService;
         this.ms = ms;
+    }
+
+    @Override
+    public byte[] extratoPdfConta(Long id) {
+        var extratos = this.listarExtratos(id);
+        var jrBeanCollectionDataSource = new JRBeanCollectionDataSource(extratos, false);
+        return gerarArquivoPdf(jrBeanCollectionDataSource, isContaAtiva(repository.findById(id)));
     }
 
     @Override
@@ -81,9 +95,9 @@ public class ContaServiceImpl implements IContaService {
         var conta = contaDTO.toModel();
         conta.setNumero(iSeqContaService.gerarNumeroContaCliente(clienteDTO.toModel()));
         conta.setAgencia(iSeqAgenciaService.gerarNumeroAgenciaCliente(clienteDTO.toModel()));
-        
+
         conta.setCliente(clienteDTO.toModel());
-        
+
         repository.save(conta);
 
         return toMinimumDTO(clienteDTO, conta);
@@ -254,4 +268,20 @@ public class ContaServiceImpl implements IContaService {
 		extratoRepository.save(new Extrato(infoContaDTO, operacaoEnum));
     }
 
+    private byte[] gerarArquivoPdf(JRBeanCollectionDataSource jrBeanCollectionDataSource, ContaFullDTO contaFullDTO) {
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("NEXUS_IMAGEM", JasperUtil.LOGO_APLICACAO);
+        parametros.put("NOME", contaFullDTO.getClienteDTO().getNome() + " " + contaFullDTO.getClienteDTO().getSobrenome());
+        parametros.put("AGENCIA", contaFullDTO.getAgencia());
+        parametros.put("NUMERO", contaFullDTO.getNumero());
+        parametros.put("DOCUMENTO", contaFullDTO.getClienteDTO().getDocumento());
+        try {
+            var caminhoArquivo = new FileInputStream(JasperUtil.ARQUIVO_RELATORIO_EXTRATO_CONTA);
+            var jasperReport = JasperCompileManager.compileReport(caminhoArquivo);
+            var fillReport = JasperFillManager.fillReport(jasperReport, parametros, jrBeanCollectionDataSource);
+            return JasperExportManager.exportReportToPdf(fillReport);
+        } catch (JRException | IOException ex) {
+            throw new ServiceUnavailableException(ex.getMessage());
+        }
+    }
 }

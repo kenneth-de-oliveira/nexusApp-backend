@@ -9,9 +9,9 @@ public class ExtratoDTO {
     private Long id;
     private String numero;
     private String agencia;
-    private double valor;
-    private OperacaoEnum operacao;
-    private LocalDateTime dataExtrato;
+    private String valor;
+    private String operacao;
+    private String dataExtrato;
 
     public Long getId() {
         return id;
@@ -33,31 +33,31 @@ public class ExtratoDTO {
         return agencia;
     }
 
+    public String getValor() {
+        return valor;
+    }
+
+    public void setValor(String valor) {
+        this.valor = valor;
+    }
+
     public void setAgencia(String agencia) {
         this.agencia = agencia;
     }
 
-    public double getValor() {
-        return valor;
-    }
-
-    public void setValor(double valor) {
-        this.valor = valor;
-    }
-
-    public OperacaoEnum getOperacao() {
+    public String getOperacao() {
         return operacao;
     }
 
-    public void setOperacao(OperacaoEnum operacao) {
+    public void setOperacao(String operacao) {
         this.operacao = operacao;
     }
 
-    public LocalDateTime getDataExtrato() {
+    public String getDataExtrato() {
         return dataExtrato;
     }
 
-    public void setDataExtrato(LocalDateTime dataExtrato) {
+    public void setDataExtrato(String dataExtrato) {
         this.dataExtrato = dataExtrato;
     }
 }
