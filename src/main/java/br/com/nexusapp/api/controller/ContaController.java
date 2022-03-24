@@ -110,7 +110,7 @@ public class ContaController {
     public ResponseEntity<byte[]> extratoPdfConta(@PathVariable Long id) {
         var arquivo = contaService.extratoPdfConta(id);
         var headers = new HttpHeaders();
-        headers.add("Content-Disposition", "inline; filename=citiesreport.pdf");
+        headers.add("Content-Disposition", "inline; filename=RELATORIO_EXTRATO_CONTA.pdf");
         return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(arquivo);
     }
 

@@ -152,7 +152,7 @@ public class ContaServiceImpl implements IContaService {
             throw new NotFoundException(ms.getMessage("conta.consulta.erro",
         null, LocaleContextHolder.getLocale()));
         });
-        List<Extrato> allByAgenciaAndNumero = extratoRepository.findByAgenciaAndNumero(conta.getAgencia(), conta.getNumero());
+        List<Extrato> allByAgenciaAndNumero = extratoRepository.findByAgenciaAndNumeroOrderByDataExtratoDesc(conta.getAgencia(), conta.getNumero());
         return allByAgenciaAndNumero.stream().map(Extrato::toDTO)
                 .collect(Collectors.toList());
     }
