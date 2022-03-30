@@ -5,13 +5,12 @@ import br.com.nexusapp.api.enums.ContaStatus;
 import br.com.nexusapp.api.enums.OperacaoEnum;
 import br.com.nexusapp.api.exception.BadRequestException;
 import br.com.nexusapp.api.exception.NotFoundException;
+import br.com.nexusapp.api.exception.RegraDeNegocioException;
 import br.com.nexusapp.api.exception.ServiceUnavailableException;
+import br.com.nexusapp.api.model.Boleto;
 import br.com.nexusapp.api.model.Conta;
 import br.com.nexusapp.api.model.Extrato;
-import br.com.nexusapp.api.repository.ClienteRepository;
-import br.com.nexusapp.api.repository.ContaRepository;
-import br.com.nexusapp.api.repository.ExtratoRepository;
-import br.com.nexusapp.api.repository.UsuarioRepository;
+import br.com.nexusapp.api.repository.*;
 import br.com.nexusapp.api.service.*;
 import br.com.nexusapp.api.util.JasperUtil;
 import net.sf.jasperreports.engine.JRException;
@@ -50,6 +49,7 @@ public class ContaServiceImpl implements IContaService {
     private final ISeqAgenciaService iSeqAgenciaService;
     private final IEnderecoService iEnderecoService;
     private final IClienteService clienteService;
+    private final BoletoRepository boletoRepository;
     private final MessageSource ms;
 
     @Autowired
@@ -62,6 +62,7 @@ public class ContaServiceImpl implements IContaService {
         IEnderecoService iEnderecoService,
         ExtratoRepository extratoRepository,
         IClienteService clienteService,
+        BoletoRepository boletoRepository,
         MessageSource ms) {
         this.clienteRepository = clienteRepository;
         this.usuarioRepository = usuarioRepository;
@@ -71,6 +72,7 @@ public class ContaServiceImpl implements IContaService {
         this.iSeqAgenciaService = iSeqAgenciaService;
         this.iEnderecoService = iEnderecoService;
         this.clienteService = clienteService;
+        this.boletoRepository = boletoRepository;
         this.ms = ms;
     }
 
@@ -186,6 +188,37 @@ public class ContaServiceImpl implements IContaService {
                 .build();
     }
 
+	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public BoletoDTO cadastrarBoleto(BoletoDTO boletoDTO) {
+
+		if (Objects.isNull(boletoDTO)) {
+			throw new RegraDeNegocioException(ms.getMessage("pagamento-boleto.erro", null, LocaleContextHolder.getLocale()));
+		}
+
+        Optional<Boleto> byCodigo = boletoRepository.findByCodigo(boletoDTO.getCodigo());
+
+        if (byCodigo.isPresent()) {
+            throw new RegraDeNegocioException(ms.getMessage("pagamento-boleto-existente-erro",
+                    null, LocaleContextHolder.getLocale()));
+        }
+
+        Boleto boleto = boletoRepository.save(boletoDTO.toModel());
+		return boleto.toDTO();
+	}
+
+    @Override
+    public BoletoDTO getBoletoPorCodigo(String codigo) {
+        Optional<Boleto> byCodigo = boletoRepository.findByCodigo(codigo);
+
+        if (byCodigo.isEmpty()) {
+            throw new RegraDeNegocioException(ms.getMessage("boleto-existente-erro",
+                    null, LocaleContextHolder.getLocale()));
+        }
+
+        return byCodigo.get().toDTO();
+    }
+
     private ContaMinimumDTO toMinimumDTO(ClienteDTO clienteDTO, Conta conta) {
         ContaMinimumDTO contaMinimumDTO = new ContaMinimumDTO(conta.toDTO());
         contaMinimumDTO.setEnderecoDTO(clienteDTO.getEnderecoDTO());
@@ -284,4 +317,5 @@ public class ContaServiceImpl implements IContaService {
             throw new ServiceUnavailableException(ex.getMessage());
         }
     }
+
 }

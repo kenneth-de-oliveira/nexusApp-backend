@@ -2,7 +2,6 @@ package br.com.nexusapp.api.repository;
 
 import java.util.Optional;
 
-import br.com.nexusapp.api.model.Conta;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.com.nexusapp.api.model.Cliente;

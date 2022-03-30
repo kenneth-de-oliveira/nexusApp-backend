@@ -1,12 +1,13 @@
 package br.com.nexusapp.api.controller;
 
-import br.com.nexusapp.api.dtos.ContaFullDTO;
-import br.com.nexusapp.api.dtos.ExtratoDTO;
-import br.com.nexusapp.api.dtos.InfoContaDTO;
-import br.com.nexusapp.api.dtos.InfoContaFullDTO;
+import br.com.nexusapp.api.dtos.*;
+import br.com.nexusapp.api.exception.BadRequestException;
+import br.com.nexusapp.api.exception.NotFoundException;
+import br.com.nexusapp.api.exception.RegraDeNegocioException;
 import br.com.nexusapp.api.service.IContaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -112,6 +113,29 @@ public class ContaController {
         var headers = new HttpHeaders();
         headers.add("Content-Disposition", "inline; filename=RELATORIO_EXTRATO_CONTA.pdf");
         return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(arquivo);
+    }
+    
+    @ResponseBody
+    @PostMapping("/boletos")
+    public ResponseEntity<BoletoDTO> cadastrarBoleto(
+        @RequestBody @Valid BoletoDTO boletoDTO) {
+		try {
+			boletoDTO = contaService.cadastrarBoleto(boletoDTO);
+		} catch (RegraDeNegocioException e) {
+			throw new BadRequestException(e.getMessage());
+		}
+        return ResponseEntity.status(HttpStatus.CREATED).body(boletoDTO);
+    }
+
+    @ResponseBody
+    @GetMapping("/boletos/{codigo}")
+    public ResponseEntity<BoletoDTO> getBoletoPorCodigo(@PathVariable final String codigo) {
+        try {
+            var boletoDTO = contaService.getBoletoPorCodigo(codigo);
+            return ResponseEntity.ok().body(boletoDTO);
+        } catch (RegraDeNegocioException e) {
+            throw new NotFoundException(e.getMessage());
+        }
     }
 
 }

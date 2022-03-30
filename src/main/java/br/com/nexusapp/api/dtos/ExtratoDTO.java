@@ -1,9 +1,5 @@
 package br.com.nexusapp.api.dtos;
 
-import br.com.nexusapp.api.enums.OperacaoEnum;
-
-import java.time.LocalDateTime;
-
 public class ExtratoDTO {
 
     private Long id;

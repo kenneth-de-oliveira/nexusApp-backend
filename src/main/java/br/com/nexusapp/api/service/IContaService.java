@@ -18,4 +18,6 @@ public interface IContaService extends UserDetailsService {
     void transferir(InfoContaFullDTO infoContaFullDTO);
     List<ExtratoDTO> listarExtratos(Long idConta);
     ContaFullDTO buscarContaPorNomeUsuario(String nomeUsuario);
+    BoletoDTO cadastrarBoleto(BoletoDTO boletoDTO);
+    BoletoDTO getBoletoPorCodigo(String codigo);
 }
