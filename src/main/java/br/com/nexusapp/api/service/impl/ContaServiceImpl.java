@@ -1,6 +1,7 @@
 package br.com.nexusapp.api.service.impl;
 
 import br.com.nexusapp.api.dtos.*;
+import br.com.nexusapp.api.enums.BoletoStatus;
 import br.com.nexusapp.api.enums.ContaStatus;
 import br.com.nexusapp.api.enums.OperacaoEnum;
 import br.com.nexusapp.api.exception.BadRequestException;
@@ -209,7 +210,7 @@ public class ContaServiceImpl implements IContaService {
 
     @Override
     public BoletoDTO getBoletoPorCodigo(String codigo) {
-        Optional<Boleto> byCodigo = boletoRepository.findByCodigo(codigo);
+        Optional<Boleto> byCodigo = boletoRepository.findByCodigoAndStatus(codigo, BoletoStatus.ANALISE);
 
         if (byCodigo.isEmpty()) {
             throw new RegraDeNegocioException(ms.getMessage("boleto-existente-erro",

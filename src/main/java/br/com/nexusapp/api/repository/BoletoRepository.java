@@ -1,11 +1,12 @@
 package br.com.nexusapp.api.repository;
 
-import java.util.Optional;
-
+import br.com.nexusapp.api.enums.BoletoStatus;
+import br.com.nexusapp.api.model.Boleto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import br.com.nexusapp.api.model.Boleto;
+import java.util.Optional;
 
 public interface BoletoRepository extends JpaRepository<Boleto, Long> {
-	Optional<Boleto> findByCodigo(String codigo);
+    Optional<Boleto> findByCodigo(String codigo);
+    Optional<Boleto> findByCodigoAndStatus(String codigo, BoletoStatus status);
 }

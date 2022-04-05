@@ -1,5 +1,6 @@
 package br.com.nexusapp.api.dtos;
 
+import br.com.nexusapp.api.enums.BoletoStatus;
 import br.com.nexusapp.api.model.Boleto;
 
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ public class BoletoDTO {
     private double valor;
     private String cedente;
     private String emissor;
+    private String status;
     private LocalDateTime dataVencimento;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -24,6 +26,14 @@ public class BoletoDTO {
 
     public Long getId() {
         return id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public void setId(Long id) {

@@ -1,6 +1,7 @@
 package br.com.nexusapp.api.model;
 
 import br.com.nexusapp.api.dtos.BoletoDTO;
+import br.com.nexusapp.api.enums.BoletoStatus;
 import br.com.nexusapp.api.enums.ParametroEnum;
 
 import javax.persistence.*;
@@ -30,6 +31,9 @@ public class Boleto implements Serializable {
     @Column(name = "cl_cedente", nullable = false)
     private String cedente;
 
+    @Enumerated(EnumType.STRING)
+    private BoletoStatus status;
+
     @Column(name = "cl_emissor", nullable = false)
     private String emissor;
 
@@ -44,11 +48,12 @@ public class Boleto implements Serializable {
 
     public Boleto() {}
 
-    public Boleto(String codigo, String emissor, LocalDateTime dataVencimento, LocalDateTime createdAt) {
+    public Boleto(String codigo, String emissor, LocalDateTime dataVencimento, LocalDateTime createdAt, BoletoStatus status) {
         this.codigo = codigo;
         this.emissor = emissor;
         this.dataVencimento = dataVencimento;
         this.createdAt = createdAt;
+        this.status = status;
     }
 
     public BoletoDTO toDTO() {
@@ -59,6 +64,7 @@ public class Boleto implements Serializable {
         boletoDTO.setValor(valor);
         boletoDTO.setCodigo(codigo);
         boletoDTO.setDataVencimento(dataVencimento);
+        boletoDTO.setStatus(this.status.getDescricao());
         boletoDTO.setCreatedAt(createdAt);
         boletoDTO.setUpdatedAt(updatedAt);
         return boletoDTO;
@@ -67,14 +73,22 @@ public class Boleto implements Serializable {
 	@PrePersist
 	void persist() {
 		cedente = ParametroEnum.of(NOME);
-		// TODO criar algoritmo com data atual mais três dias
-		dataVencimento = LocalDateTime.now();
+		dataVencimento = LocalDateTime.now().plusDays(3);
 		createdAt = LocalDateTime.now();
 		updatedAt = LocalDateTime.now();
+		status = BoletoStatus.ANALISE;
 	}
 
     public Long getId() {
         return id;
+    }
+
+    public BoletoStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(BoletoStatus status) {
+        this.status = status;
     }
 
     public void setId(Long id) {
