@@ -140,10 +140,9 @@ public class ContaController {
     }
 
     @PatchMapping("/boletos/update")
-    public ResponseEntity<Void> updateBoletoStatus(@RequestParam final Long id,
-                                                   @RequestParam final BoletoStatus status) {
+    public ResponseEntity<Void> updateBoletoStatus(@RequestBody BoletoStatusDTO boletoStatusDTO) {
         try {
-            contaService.updateBoletoStatus(id, status);
+            contaService.updateBoletoStatus(boletoStatusDTO.getId(), BoletoStatus.valueOf(boletoStatusDTO.getStatus()));
             return ResponseEntity.ok().build();
         } catch (RegraDeNegocioException e) {
             throw new NotFoundException(e.getMessage());

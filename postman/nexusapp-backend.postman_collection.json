@@ -187,8 +187,17 @@
 						},
 						"method": "PATCH",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 37,\r\n    \"status\": \"ANALISE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{host}}/contas/boletos/update?status=ANALISE&id=37",
+							"raw": "{{host}}/contas/boletos/update",
 							"host": [
 								"{{host}}"
 							],
@@ -196,16 +205,6 @@
 								"contas",
 								"boletos",
 								"update"
-							],
-							"query": [
-								{
-									"key": "status",
-									"value": "ANALISE"
-								},
-								{
-									"key": "id",
-									"value": "37"
-								}
 							]
 						}
 					},
@@ -657,7 +656,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"codigo\": \"36890001019317537422790001000208100000000000000\",\r\n    \"valor\": 150,\r\n    \"emissor\": \"Itau\"\r\n}",
+							"raw": "{\r\n    \"codigo\": \"3429179292600010389340000002\",\r\n    \"valor\": 10,\r\n    \"emissor\": \"Itau\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
