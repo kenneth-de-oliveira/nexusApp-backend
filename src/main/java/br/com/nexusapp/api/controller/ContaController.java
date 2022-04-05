@@ -1,6 +1,7 @@
 package br.com.nexusapp.api.controller;
 
 import br.com.nexusapp.api.dtos.*;
+import br.com.nexusapp.api.enums.BoletoStatus;
 import br.com.nexusapp.api.exception.BadRequestException;
 import br.com.nexusapp.api.exception.NotFoundException;
 import br.com.nexusapp.api.exception.RegraDeNegocioException;
@@ -133,6 +134,17 @@ public class ContaController {
         try {
             var boletoDTO = contaService.getBoletoPorCodigo(codigo);
             return ResponseEntity.ok().body(boletoDTO);
+        } catch (RegraDeNegocioException e) {
+            throw new NotFoundException(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/boletos/update")
+    public ResponseEntity<Void> updateBoletoStatus(@RequestParam final Long id,
+                                                   @RequestParam final BoletoStatus status) {
+        try {
+            contaService.updateBoletoStatus(id, status);
+            return ResponseEntity.ok().build();
         } catch (RegraDeNegocioException e) {
             throw new NotFoundException(e.getMessage());
         }

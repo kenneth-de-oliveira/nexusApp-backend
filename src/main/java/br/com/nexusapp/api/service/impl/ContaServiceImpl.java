@@ -220,6 +220,19 @@ public class ContaServiceImpl implements IContaService {
         return byCodigo.get().toDTO();
     }
 
+    @Override
+    public void updateBoletoStatus(Long id, BoletoStatus status) {
+        Optional<Boleto> byCodigo = boletoRepository.findById(id);
+
+        if (byCodigo.isEmpty()) {
+            throw new RegraDeNegocioException(ms.getMessage("boleto-existente-erro",
+                    null, LocaleContextHolder.getLocale()));
+        }
+
+        byCodigo.get().setStatus(status);
+        boletoRepository.save(byCodigo.get());
+    }
+
     private ContaMinimumDTO toMinimumDTO(ClienteDTO clienteDTO, Conta conta) {
         ContaMinimumDTO contaMinimumDTO = new ContaMinimumDTO(conta.toDTO());
         contaMinimumDTO.setEnderecoDTO(clienteDTO.getEnderecoDTO());

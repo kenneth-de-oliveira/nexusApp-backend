@@ -1,6 +1,7 @@
 package br.com.nexusapp.api.service;
 
 import br.com.nexusapp.api.dtos.*;
+import br.com.nexusapp.api.enums.BoletoStatus;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
@@ -20,4 +21,5 @@ public interface IContaService extends UserDetailsService {
     ContaFullDTO buscarContaPorNomeUsuario(String nomeUsuario);
     BoletoDTO cadastrarBoleto(BoletoDTO boletoDTO);
     BoletoDTO getBoletoPorCodigo(String codigo);
+    void updateBoletoStatus(Long id, BoletoStatus status);
 }
