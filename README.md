@@ -6,6 +6,7 @@ This API is a proposal for a "fictitious" digital account project developed as a
 
 - Git
 - Lombok
+- Jasper Report 
 - Spring Security  
 - Maven
 - Spring Boot 
@@ -14,7 +15,6 @@ This API is a proposal for a "fictitious" digital account project developed as a
 - Spring Data 
 - MySQL
 - H2
-- Jasper Report 
 
 ========================================================================
 
