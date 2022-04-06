@@ -13,7 +13,8 @@ This API is a proposal for a "fictitious" digital account project developed as a
 - JPA (Hibernate) 
 - Spring Data 
 - MySQL
-- H2 
+- H2
+- Jasper Report 
 
 ========================================================================
 
