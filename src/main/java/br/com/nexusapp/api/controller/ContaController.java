@@ -1,19 +1,16 @@
 package br.com.nexusapp.api.controller;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
-import br.com.nexusapp.api.dtos.*;
+import br.com.nexusapp.api.dtos.ContaFullDTO;
+import br.com.nexusapp.api.dtos.ExtratoDTO;
+import br.com.nexusapp.api.dtos.InfoContaDTO;
+import br.com.nexusapp.api.dtos.InfoContaFullDTO;
+import br.com.nexusapp.api.service.IContaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import br.com.nexusapp.api.event.RecursoCriadoEvent;
-import br.com.nexusapp.api.service.IContaService;
-
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,14 +19,11 @@ import java.util.List;
 public class ContaController {
 
     private final IContaService contaService;
-    private final ApplicationEventPublisher eventPublisher;
 
     @Autowired
     public ContaController(
-            IContaService contaService,
-            ApplicationEventPublisher eventPublisher) {
+        IContaService contaService) {
         this.contaService = contaService;
-        this.eventPublisher = eventPublisher;
     }
 
     @ResponseBody
@@ -47,6 +41,14 @@ public class ContaController {
         @PathVariable final String numero){
         return ResponseEntity.ok(
         contaService.buscarContaPorNumero(numero));
+    }
+
+    @ResponseBody
+    @GetMapping("/buscar-por-usuario/{nomeUsuario}")
+    public ResponseEntity<ContaFullDTO> buscarContaPorNomeUsuario(
+        @PathVariable final String nomeUsuario){
+        return ResponseEntity.ok(
+        contaService.buscarContaPorNomeUsuario(nomeUsuario));
     }
     
     @ResponseBody
@@ -71,16 +73,6 @@ public class ContaController {
         @PathVariable final Long id){
         return ResponseEntity.ok(
         contaService.buscarContaPorId(id));
-    }
-
-    @ResponseBody
-    @PostMapping("/cadastrar")
-    public ResponseEntity<ContaFullDTO> cadastrar(
-        @RequestBody @Valid ContaDTO contaDto,
-        HttpServletResponse response) {
-        var contaDTO = contaService.cadastrar(contaDto);
-        eventPublisher.publishEvent(new RecursoCriadoEvent(this, response, contaDTO.getId()));
-        return ResponseEntity.status(HttpStatus.CREATED).body(contaDTO);
     }
 
     @ResponseBody
