@@ -13,7 +13,7 @@ This API is a proposal for a "fictitious" digital account project developed as a
 - Api (Rest)
 - JPA (Hibernate) 
 - Spring Data 
-- MySQL
+- PostgreSQL
 - H2
 
 ========================================================================
