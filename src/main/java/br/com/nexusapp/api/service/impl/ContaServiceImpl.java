@@ -124,11 +124,9 @@ public class ContaServiceImpl implements IContaService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void transferir(InfoContaFullDTO infoContaDTO) {
     	InfoContaDTO infoContaSaque = InfoContaDTO.toInfoContaDTO(infoContaDTO.getAgencia(), infoContaDTO.getNumero(), infoContaDTO.getValor());
-    	this.registrarMovimentacao(infoContaSaque, SAQUE);
         this.realizaSaque(infoContaSaque);
 
         InfoContaDTO infoContaDeposito = InfoContaDTO.toInfoContaDTO(infoContaDTO.getAgenciaDestino(), infoContaDTO.getNumeroDestino(), infoContaDTO.getValor());
-        this.registrarMovimentacao(infoContaDeposito, DEPOSITO);
         this.realizaDeposito(infoContaDeposito);
     }
 
