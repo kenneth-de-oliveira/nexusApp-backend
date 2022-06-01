@@ -18,6 +18,8 @@ import br.com.nexusapp.api.repository.ClienteRepository;
 import br.com.nexusapp.api.repository.UsuarioRepository;
 import br.com.nexusapp.api.service.IClienteService;
 import br.com.nexusapp.api.service.IEnderecoService;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ClienteServiceImpl implements IClienteService {
@@ -69,6 +71,24 @@ public class ClienteServiceImpl implements IClienteService {
         null, LocaleContextHolder.getLocale()));
         }
         return getClienteDTO(clienteOpt.get());
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public ClienteDTO update(Long idCliente, ClienteDTO clienteDto) {
+        Optional<Cliente> clienteOpt = repository.findById(idCliente);
+        if (clienteOpt.isEmpty()) {
+            throw new NotFoundException(ms.getMessage("cliente.consulta.erro",
+                    null, LocaleContextHolder.getLocale()));
+        }
+        return atualizarCliente(clienteOpt.get(), clienteDto);
+    }
+
+    private ClienteDTO atualizarCliente(Cliente clienteOld, ClienteDTO clienteNewDto) {
+        clienteOld.setEmail(clienteNewDto.getEmail());
+        clienteOld.setTelefone(clienteNewDto.getTelefone());
+        repository.save(clienteOld);
+        return clienteOld.toDTO();
     }
 
     private ClienteDTO getClienteDTO(Cliente cliente) {

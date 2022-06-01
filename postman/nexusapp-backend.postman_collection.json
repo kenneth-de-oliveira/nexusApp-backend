@@ -2,12 +2,121 @@
 	"info": {
 		"_postman_id": "85e64954-4aa2-4c91-bdd6-2cc6dda3c08e",
 		"name": "nexusapp-backend",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13662308"
 	},
 	"item": [
 		{
+			"name": "autenticação",
+			"item": [
+				{
+					"name": "token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const json = pm.response.json();\r",
+									"const tokenDeResposta = json.access_token;\r",
+									"pm.environment.set(\"access_token\", tokenDeResposta);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "@321",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "my-angular-app",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "koliveiras",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "koliveiras",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/oauth/token",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "clientes",
 			"item": [
+				{
+					"name": "atualizar cliente",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"koliveiras@indracompany.com\",\r\n    \"telefone\": \"991209068\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/clientes/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"clientes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "buscar cliente por id",
 					"request": {
@@ -16,7 +125,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDc0NTA3ODQsInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiZDlhZDgyY2UtOGNiMi00MTYzLWE2MTYtOGNjZTJlOGU1ODIxIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.CXSk71JhhaOo1YKVT5jzw6JaD1zfa-UI6Vw281eeu4c",
+									"value": "{{access_token}}",
 									"type": "string"
 								}
 							]
@@ -24,12 +133,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/clientes/1",
-							"protocol": "http",
+							"raw": "{{host}}/clientes/1",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"clientes",
 								"1"
@@ -46,7 +153,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDc0NTA3ODQsInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiZDlhZDgyY2UtOGNiMi00MTYzLWE2MTYtOGNjZTJlOGU1ODIxIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.CXSk71JhhaOo1YKVT5jzw6JaD1zfa-UI6Vw281eeu4c",
+									"value": "{{access_token}}",
 									"type": "string"
 								}
 							]
@@ -54,12 +161,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/clientes/buscar-por-cpf/70943418496",
-							"protocol": "http",
+							"raw": "{{host}}/clientes/buscar-por-cpf/70943418496",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"clientes",
 								"buscar-por-cpf",
@@ -72,16 +177,19 @@
 			]
 		},
 		{
-			"name": "conta",
+			"name": "contas",
 			"item": [
 				{
 					"name": "cadastrar conta",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"clienteDTO\": {\n        \"usuarioDTO\": {\n            \"username\": \"paulo\",\n            \"password\": \"12345678\"\n        },\n        \"nome\": \"José\",\n        \"sobrenome\": \"da Silva Soares\",\n        \"documento\": \"45962763076\",\n        \"email\": \"mario1234@outlook.com\",\n        \"telefone\": \"3128669356\",\n        \"enderecoDTO\": {\n            \"logradouro\": \"Rua josé da Cunha Rego\",\n            \"bairro\": \"novo\",\n            \"numero\": \"1028\",\n            \"cidade\": \"Guarabira\",\n            \"cep\": \"5820000\",\n            \"uf\": \"PB\"\n        }\n    }\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -89,15 +197,52 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/publico/contas",
-							"protocol": "http",
+							"raw": "{{host}}/publico/contas/cadastrar",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"publico",
-								"contas"
+								"contas",
+								"cadastrar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "atualizar status boleto",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 70,\r\n    \"status\": \"ANALISE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/contas/boletos/update",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"contas",
+								"boletos",
+								"update"
 							]
 						}
 					},
@@ -148,14 +293,14 @@
 					"response": []
 				},
 				{
-					"name": "listar extratos",
+					"name": "baixar extrato em pdf",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDgwMDA3ODksInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiYmI2YWUyZjItZGY3Ny00ODQ4LTk1NDctZjhkNWFjMTk0NzNjIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.bUB0hDoh9MJNI-KWLFZWkUIjj6d1LhOPWe_g3f6P2sI",
+									"value": "{{access_token}}",
 									"type": "string"
 								}
 							]
@@ -163,12 +308,40 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/contas/extratos?idConta=1",
-							"protocol": "http",
+							"raw": "{{host}}/contas/3/extratos/pdf",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
+							"path": [
+								"contas",
+								"3",
+								"extratos",
+								"pdf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listar extratos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/contas/extratos?idConta=2",
+							"host": [
+								"{{host}}"
+							],
 							"path": [
 								"contas",
 								"extratos"
@@ -176,8 +349,37 @@
 							"query": [
 								{
 									"key": "idConta",
-									"value": "1"
+									"value": "2"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscar boleto por código",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/contas/boletos/3418179292600010389340000003",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"contas",
+								"boletos",
+								"3418179292600010389340000003"
 							]
 						}
 					},
@@ -194,7 +396,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDc5OTk2MjksInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiZTE0YjdjY2UtZjUxNC00ODU5LTgyMDItZTcyOGRjMGJlZmYwIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.eR2XECTNs3e0ef3Fx7DNiCzj5FTJkgmuDveFFAJTUs0",
+									"value": "{{access_token}}",
 									"type": "string"
 								}
 							]
@@ -211,15 +413,13 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/contas/1",
-							"protocol": "http",
+							"raw": "{{host}}/contas/6",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"contas",
-								"1"
+								"6"
 							]
 						}
 					},
@@ -233,7 +433,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDc5MTM3MDksInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiYTA2ZDEzOTAtY2ViOC00ZTlkLTg0MjktYmU2YjM4MTBjNTRmIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.8r0lyG_SwEfCltum59P-CO050aaHSmxgmidRyBFeQfw",
+									"value": "{{access_token}}",
 									"type": "string"
 								}
 							]
@@ -241,12 +441,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/contas/buscar-por-usuario/koliveiras",
-							"protocol": "http",
+							"raw": "{{host}}/contas/buscar-por-usuario/koliveiras",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"contas",
 								"buscar-por-usuario",
@@ -267,7 +465,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDc0NTA3ODQsInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiZDlhZDgyY2UtOGNiMi00MTYzLWE2MTYtOGNjZTJlOGU1ODIxIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.CXSk71JhhaOo1YKVT5jzw6JaD1zfa-UI6Vw281eeu4c",
+									"value": "{{access_token}}",
 									"type": "string"
 								}
 							]
@@ -284,12 +482,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/contas/buscar-por-agencia/20220101",
-							"protocol": "http",
+							"raw": "{{host}}/contas/buscar-por-agencia/20220101",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"contas",
 								"buscar-por-agencia",
@@ -307,7 +503,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDc4ODY3MDIsInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiNGE3YmE0ZDktNTgzMy00NzJlLThjYTItM2RlZGM4MjgyY2VjIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.mVgywWSCTTNsXRIijoGc-dCClNPHpMavcBwIVA_rIRs",
+									"value": "{{access_token}}",
 									"type": "string"
 								}
 							]
@@ -315,12 +511,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/contas/buscar-por-cpf/30550479074",
-							"protocol": "http",
+							"raw": "{{host}}/contas/buscar-por-cpf/30550479074",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"contas",
 								"buscar-por-cpf",
@@ -341,7 +535,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDc0NTA3ODQsInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiZDlhZDgyY2UtOGNiMi00MTYzLWE2MTYtOGNjZTJlOGU1ODIxIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.CXSk71JhhaOo1YKVT5jzw6JaD1zfa-UI6Vw281eeu4c",
+									"value": "{{access_token}}",
 									"type": "string"
 								}
 							]
@@ -358,12 +552,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/contas/buscar-por-numero/20220010000001",
-							"protocol": "http",
+							"raw": "{{host}}/contas/buscar-por-numero/20220010000001",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"contas",
 								"buscar-por-numero",
@@ -381,7 +573,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDc0NTA3ODQsInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiZDlhZDgyY2UtOGNiMi00MTYzLWE2MTYtOGNjZTJlOGU1ODIxIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.CXSk71JhhaOo1YKVT5jzw6JaD1zfa-UI6Vw281eeu4c",
+									"value": "{{access_token}}",
 									"type": "string"
 								}
 							]
@@ -390,7 +582,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"agencia\": \"20220101\",\n    \"numero\": \"20220010000001\",\n    \"valor\": \"500\"\n}",
+							"raw": "{\n    \"agencia\": \"20220101\",\n    \"numero\": \"20220010000001\",\n    \"valor\": \"3500\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -398,12 +590,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/contas/depositar",
-							"protocol": "http",
+							"raw": "{{host}}/contas/depositar",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"contas",
 								"depositar"
@@ -420,7 +610,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDc0NTA3ODQsInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiZDlhZDgyY2UtOGNiMi00MTYzLWE2MTYtOGNjZTJlOGU1ODIxIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.CXSk71JhhaOo1YKVT5jzw6JaD1zfa-UI6Vw281eeu4c",
+									"value": "{{access_token}}",
 									"type": "string"
 								}
 							]
@@ -437,13 +627,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/contas/sacar",
-							"protocol": "http",
+							"raw": "{{host}}//contas/sacar",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
+								"",
 								"contas",
 								"sacar"
 							]
@@ -459,7 +648,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDc0NTA3ODQsInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiZDlhZDgyY2UtOGNiMi00MTYzLWE2MTYtOGNjZTJlOGU1ODIxIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.CXSk71JhhaOo1YKVT5jzw6JaD1zfa-UI6Vw281eeu4c",
+									"value": "{{access_token}}",
 									"type": "string"
 								}
 							]
@@ -476,15 +665,50 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/contas/transferir",
-							"protocol": "http",
+							"raw": "{{host}}/contas/transferir",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"contas",
 								"transferir"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cadastrar boleto",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"codigo\": \"3418179292600010389340000003\",\r\n    \"valor\": 30,\r\n    \"emissor\": \"Bradesco\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/contas/boletos",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"contas",
+								"boletos"
 							]
 						}
 					},
@@ -503,7 +727,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDc0NTA3ODQsInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiZDlhZDgyY2UtOGNiMi00MTYzLWE2MTYtOGNjZTJlOGU1ODIxIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.CXSk71JhhaOo1YKVT5jzw6JaD1zfa-UI6Vw281eeu4c",
+									"value": "{{access_token}}",
 									"type": "string"
 								}
 							]
@@ -520,12 +744,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/enderecos/cadastrar?idCliente=1",
-							"protocol": "http",
+							"raw": "{{host}}/enderecos/cadastrar?idCliente=3",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"enderecos",
 								"cadastrar"
@@ -533,8 +755,45 @@
 							"query": [
 								{
 									"key": "idCliente",
-									"value": "1"
+									"value": "3"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "atualizar endereco",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"logradouro\": \"Rua 1234568\",\r\n    \"bairro\": \"abc\",\r\n    \"numero\": \"345\",\r\n    \"cidade\": \"xyz\",\r\n    \"cep\": \"xxxxxxxx\",\r\n    \"uf\": \"XX\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/enderecos/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"enderecos",
+								"1"
 							]
 						}
 					},
@@ -548,7 +807,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDc0NTA3ODQsInVzZXJfbmFtZSI6ImtvbGl2ZWlyYXMiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiZDlhZDgyY2UtOGNiMi00MTYzLWE2MTYtOGNjZTJlOGU1ODIxIiwiY2xpZW50X2lkIjoibXktYW5ndWxhci1hcHAiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.CXSk71JhhaOo1YKVT5jzw6JaD1zfa-UI6Vw281eeu4c",
+									"value": "{{access_token}}",
 									"type": "string"
 								}
 							]
@@ -556,76 +815,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/enderecos/lista-por-cpf/70943418496",
-							"protocol": "http",
+							"raw": "{{host}}/enderecos/lista-por-cpf/70943418496",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"enderecos",
 								"lista-por-cpf",
 								"70943418496"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "auth",
-			"item": [
-				{
-					"name": "token",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "@321",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "my-angular-app",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "grant_type",
-									"value": "password",
-									"type": "text"
-								},
-								{
-									"key": "username",
-									"value": "koliveiras",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "12345678",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "http://localhost:8080/oauth/token",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"oauth",
-								"token"
 							]
 						}
 					},
