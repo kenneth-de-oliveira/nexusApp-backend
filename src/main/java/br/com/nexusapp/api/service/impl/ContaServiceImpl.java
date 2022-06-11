@@ -1,12 +1,15 @@
 package br.com.nexusapp.api.service.impl;
 
 import br.com.nexusapp.api.dtos.*;
+import br.com.nexusapp.api.enums.ClienteStatus;
 import br.com.nexusapp.api.enums.ContaStatus;
 import br.com.nexusapp.api.enums.OperacaoEnum;
 import br.com.nexusapp.api.exception.BadRequestException;
 import br.com.nexusapp.api.exception.NotFoundException;
+import br.com.nexusapp.api.model.Cliente;
 import br.com.nexusapp.api.model.Conta;
 import br.com.nexusapp.api.model.Extrato;
+import br.com.nexusapp.api.model.Usuario;
 import br.com.nexusapp.api.repository.ClienteRepository;
 import br.com.nexusapp.api.repository.ContaRepository;
 import br.com.nexusapp.api.repository.ExtratoRepository;
@@ -83,7 +86,8 @@ public class ContaServiceImpl implements IContaService {
         conta.setAgencia(iSeqAgenciaService.gerarNumeroAgenciaCliente(clienteDTO.toModel()));
         
         conta.setCliente(clienteDTO.toModel());
-        
+        conta.setUpdatedAt(LocalDateTime.now());
+
         repository.save(conta);
 
         return toMinimumDTO(clienteDTO, conta);
@@ -133,10 +137,27 @@ public class ContaServiceImpl implements IContaService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deletaContaById(Long id) {
+        Conta conta = repository.findByIdAndStatus(id, ContaStatus.ATIVO).orElseThrow(() -> {
+            throw new NotFoundException(ms.getMessage("conta.consulta.erro", null, LocaleContextHolder.getLocale()));
+        });
+
+        if (conta.getSaldo() > 0){
+            throw new BadRequestException(ms.getMessage("conta.deletar.erro", null, LocaleContextHolder.getLocale()));
+        }
+
+        Usuario usuario = usuarioRepository.buscarPorIdConta(conta.getId()).orElseThrow(() -> {
+            throw new NotFoundException(ms.getMessage("conta.consulta.erro", null, LocaleContextHolder.getLocale()));
+        });
+        encerrarContaCliente(conta);
+        usuarioRepository.delete(usuario);
+    }
+
+    @Override
     public List<ExtratoDTO> listarExtratos(Long idConta) {
-        Conta conta = repository.findById(idConta).orElseThrow(() -> {
-            throw new NotFoundException(ms.getMessage("conta.consulta.erro",
-        null, LocaleContextHolder.getLocale()));
+        Conta conta = repository.findByIdAndStatus(idConta, ContaStatus.ATIVO).orElseThrow(() -> {
+            throw new NotFoundException(ms.getMessage("conta.consulta.erro", null, LocaleContextHolder.getLocale()));
         });
         List<Extrato> allByAgenciaAndNumero = extratoRepository.findByAgenciaAndNumero(conta.getAgencia(), conta.getNumero());
         return allByAgenciaAndNumero.stream().map(Extrato::toDTO)
@@ -243,15 +264,28 @@ public class ContaServiceImpl implements IContaService {
     }
 
     private ContaFullDTO isContaAtiva(Optional<Conta> contaOpt) {
-    	if (contaOpt.isEmpty()) {
+    	if (contaOpt.isEmpty() || contaOpt.get().getStatus().equals(ContaStatus.INATIVO)) {
             throw new NotFoundException(ms.getMessage("conta.consulta.erro",
-        null, LocaleContextHolder.getLocale()));
+            null, LocaleContextHolder.getLocale()));
         }
         return getContaMinimumDTO(contaOpt.get());
     }
 
     private void registrarMovimentacao(InfoContaDTO infoContaDTO, OperacaoEnum operacaoEnum) {
 		extratoRepository.save(new Extrato(infoContaDTO, operacaoEnum));
+    }
+
+    private void encerrarContaCliente(Conta conta) {
+        Cliente cliente = conta.getCliente();
+
+        conta.setStatus(ContaStatus.INATIVO);
+        conta.setUpdatedAt(LocalDateTime.now());
+
+        cliente.setStatus(ClienteStatus.INATIVO);
+        cliente.setUpdatedAt(LocalDateTime.now());
+
+        repository.save(conta);
+        clienteRepository.save(cliente);
     }
 
 }

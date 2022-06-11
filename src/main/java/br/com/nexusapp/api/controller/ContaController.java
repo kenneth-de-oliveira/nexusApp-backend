@@ -105,4 +105,10 @@ public class ContaController {
         return ResponseEntity.ok(extratoDTOS);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        contaService.deletaContaById(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

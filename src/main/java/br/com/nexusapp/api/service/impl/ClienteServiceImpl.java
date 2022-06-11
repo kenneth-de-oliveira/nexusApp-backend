@@ -1,7 +1,9 @@
 package br.com.nexusapp.api.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
+import br.com.nexusapp.api.enums.ClienteStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -45,6 +47,7 @@ public class ClienteServiceImpl implements IClienteService {
         }
 
         var cliente = salvarCredenciaisDoCliente(clienteDTO);
+        cliente.setUpdatedAt(LocalDateTime.now());
 
         return cliente.toFullDTO(enderecoService
                 .cadastrar(cliente.getId(),
@@ -72,6 +75,10 @@ public class ClienteServiceImpl implements IClienteService {
     }
 
     private ClienteDTO getClienteDTO(Cliente cliente) {
+        if (cliente.getStatus().equals(ClienteStatus.INATIVO)) {
+            throw new NotFoundException(ms.getMessage("cliente.consulta.erro",
+                    null, LocaleContextHolder.getLocale()));
+        }
         EnderecoDTO enderecoDTO =buscarEnderecoCliente(cliente.toDTO());
         enderecoDTO.setIdCliente(cliente.getId());
         return new ClienteDTO(cliente, enderecoDTO);

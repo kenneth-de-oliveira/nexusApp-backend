@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface ContaRepository extends JpaRepository<Conta, Long> {
     @Query(nativeQuery = true, value = "SELECT * FROM tb_conta WHERE fk_cliente = :idCliente")
     Optional<Conta> consultaPorIdCliente(Long idCliente);
+    Optional<Conta> findByIdAndStatus(Long id, ContaStatus status);
     Optional<Conta> findByAgencia(String agencia);
     Optional<Conta> findByAgenciaAndNumeroAndStatus(String agencia, String numero, ContaStatus status);
     Optional<Conta> findByNumero(String numero);

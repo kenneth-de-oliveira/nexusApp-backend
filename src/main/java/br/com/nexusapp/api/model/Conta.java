@@ -40,14 +40,13 @@ public class Conta implements Serializable {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @PrePersist
     void persist() {
         status = ContaStatus.of(1);
         createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
         this.saldo = 0;
         this.limite = 0;
     }
