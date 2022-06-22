@@ -1,0 +1,858 @@
+{
+	"info": {
+		"_postman_id": "85e64954-4aa2-4c91-bdd6-2cc6dda3c08e",
+		"name": "nexusapp-backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13662308"
+	},
+	"item": [
+		{
+			"name": "autenticação",
+			"item": [
+				{
+					"name": "token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const json = pm.response.json();\r",
+									"const tokenDeResposta = json.access_token;\r",
+									"pm.environment.set(\"access_token\", tokenDeResposta);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "@321",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "my-angular-app",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "koliveiras",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "koliveiras",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/oauth/token",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "clientes",
+			"item": [
+				{
+					"name": "atualizar cliente",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"koliveiras@indracompany.com\",\r\n    \"telefone\": \"991209068\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/clientes/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"clientes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscar cliente por id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/clientes/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"clientes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscar cliente por cpf",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/clientes/buscar-por-cpf/70943418496",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"clientes",
+								"buscar-por-cpf",
+								"70943418496"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "contas",
+			"item": [
+				{
+					"name": "cadastrar conta",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"clienteDTO\": {\r\n        \"nome\": \"Joao\",\r\n        \"sobrenome\": \"alex\",\r\n        \"documento\": \"77203224015\",\r\n        \"email\": \"lais.emanuelly.aragao@power.alstom.com\",\r\n        \"telefone\": \"8335061890\",\r\n        \"enderecoDTO\": {\r\n            \"logradouro\": \"xyz\",\r\n            \"bairro\": \"nobvo\",\r\n            \"numero\": \"1234\",\r\n            \"cidade\": \"guarb\",\r\n            \"cep\": \"123\",\r\n            \"uf\": \"RJ\"\r\n        },\r\n        \"usuarioDTO\": {\r\n            \"username\": \"koliveiras\",\r\n            \"password\": \"koliveiras\"\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/publico/contas",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"publico",
+								"contas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "atualizar status boleto",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 70,\r\n    \"status\": \"ANALISE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/contas/boletos/update",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"contas",
+								"boletos",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "consultar saldo por agência e número",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idCliente\": 17\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/contas/consultar-saldo/20220101/20220010000001",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"contas",
+								"consultar-saldo",
+								"20220101",
+								"20220010000001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "inativar conta",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/contas/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"contas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "baixar extrato em pdf",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/contas/1/extratos/pdf",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"contas",
+								"1",
+								"extratos",
+								"pdf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listar extratos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/contas/extratos?idConta=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"contas",
+								"extratos"
+							],
+							"query": [
+								{
+									"key": "idConta",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscar boleto por código",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/contas/boletos/3418179292600010389340000003",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"contas",
+								"boletos",
+								"3418179292600010389340000003"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscar conta por id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/contas/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"contas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscar conta por nome usuario",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/contas/buscar-por-usuario/koliveiras",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"contas",
+								"buscar-por-usuario",
+								"koliveiras"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscar conta por agencia",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idCliente\": 17\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/contas/buscar-por-agencia/20220101",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"contas",
+								"buscar-por-agencia",
+								"20220101"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscar conta por cpf",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/contas/buscar-por-cpf/70943418496",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"contas",
+								"buscar-por-cpf",
+								"70943418496"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscar conta por número",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idCliente\": 17\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/contas/buscar-por-numero/20220010000001",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"contas",
+								"buscar-por-numero",
+								"20220010000001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "depositar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"agencia\": \"20220101\",\n    \"numero\": \"20220010000001\",\n    \"valor\": \"3500\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/contas/depositar",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"contas",
+								"depositar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sacar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"agencia\": \"20220101\",\n    \"numero\": \"20220010000001\",\n    \"valor\": \"5000\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/contas/sacar",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"contas",
+								"sacar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "transferir",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"agencia\": \"20220101\",\r\n    \"agenciaDestino\": \"20220301\",\r\n    \"numero\": \"20220010000001\",\r\n    \"numeroDestino\" : \"20220030000001\",\r\n    \"valor\": \"100\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/contas/transferir",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"contas",
+								"transferir"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cadastrar boleto",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"codigo\": \"3418179292600010389340000003\",\r\n    \"valor\": 30,\r\n    \"emissor\": \"Bradesco\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/contas/boletos",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"contas",
+								"boletos"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "enderecos",
+			"item": [
+				{
+					"name": "cadastrar endereco",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"logradouro\": \"Rua 123\",\n    \"bairro\": \"abc\",\n    \"numero\": \"345\",\n    \"cidade\": \"xyz\",\n    \"cep\": \"xxxxxxxx\",\n    \"uf\": \"XX\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/enderecos/cadastrar?idCliente=3",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"enderecos",
+								"cadastrar"
+							],
+							"query": [
+								{
+									"key": "idCliente",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "atualizar endereco",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"logradouro\": \"rua abcd\",\r\n    \"bairro\": \"novo\",\r\n    \"numero\": \"123\",\r\n    \"cidade\": \"xyz\",\r\n    \"cep\": \"58200000\",\r\n    \"uf\": \"RJ\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/enderecos/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"enderecos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "lista endereços de um cliente pelo cpf",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/enderecos/lista-por-cpf/70943418496",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"enderecos",
+								"lista-por-cpf",
+								"70943418496"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
