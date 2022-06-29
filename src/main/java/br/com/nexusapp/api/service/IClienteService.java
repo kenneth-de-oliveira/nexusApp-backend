@@ -6,4 +6,5 @@ public interface IClienteService {
     ClienteDTO cadastrar(ClienteDTO clienteDTO);
     ClienteDTO buscarClientePorCpf(String cpf);
     ClienteDTO buscarClientePorId(Long idCliente);
+    ClienteDTO update(Long idCliente, ClienteDTO clienteDto);
 }

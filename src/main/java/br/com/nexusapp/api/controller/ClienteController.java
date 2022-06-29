@@ -49,4 +49,13 @@ public class ClienteController {
         response.setHeader("Location", uri.toASCIIString());
         return ResponseEntity.created(uri).body(clienteDTO);
     }
+
+    @ResponseBody
+    @PatchMapping("/{idCliente}")
+    public ResponseEntity<ClienteDTO> update(
+            @PathVariable final Long idCliente,
+            @RequestBody ClienteDTO clienteDto) {
+        var clienteDTO = clienteService.update(idCliente, clienteDto);
+        return ResponseEntity.ok(clienteDTO);
+    }
 }

@@ -36,6 +36,15 @@ public class EnderecoController {
     }
 
     @ResponseBody
+    @PutMapping("/{idCliente}")
+    public ResponseEntity<EnderecoDTO> update(
+            @PathVariable final Long idCliente,
+            @RequestBody @Valid EnderecoDTO enderecoDTO) {
+        var enderecoDto = enderecoService.update(idCliente, enderecoDTO);
+        return ResponseEntity.ok(enderecoDto);
+    }
+
+    @ResponseBody
     @GetMapping("/{id}")
     public ResponseEntity<EnderecoDTO> buscarDoClientePorId(
         @PathVariable final Long id){
