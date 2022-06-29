@@ -22,6 +22,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -269,14 +270,15 @@ public class ContaServiceImpl implements IContaService {
     }
 
     private byte[] gerarArquivoPdf(JRBeanCollectionDataSource jrBeanCollectionDataSource, ContaFullDTO contaFullDTO) {
-        Map<String, Object> parametros = new HashMap<>();
-        parametros.put("NEXUS_IMAGEM", JasperUtil.LOGO_APLICACAO);
-        parametros.put("NOME", contaFullDTO.getClienteDTO().getNome() + " " + contaFullDTO.getClienteDTO().getSobrenome());
-        parametros.put("AGENCIA", contaFullDTO.getAgencia());
-        parametros.put("NUMERO", contaFullDTO.getNumero());
-        parametros.put("DOCUMENTO", contaFullDTO.getClienteDTO().getDocumento());
         try {
-            var caminhoArquivo = new FileInputStream(JasperUtil.ARQUIVO_RELATORIO_EXTRATO_CONTA);
+            Map<String, Object> parametros = new HashMap<>();
+            parametros.put("NEXUS_IMAGEM", new ClassPathResource(JasperUtil.LOGO_APLICACAO).getURI().getPath());
+            parametros.put("NOME", contaFullDTO.getClienteDTO().getNome() + " " + contaFullDTO.getClienteDTO().getSobrenome());
+            parametros.put("AGENCIA", contaFullDTO.getAgencia());
+            parametros.put("NUMERO", contaFullDTO.getNumero());
+            parametros.put("DOCUMENTO", contaFullDTO.getClienteDTO().getDocumento());
+            var uri = new ClassPathResource(JasperUtil.ARQUIVO_RELATORIO_EXTRATO_CONTA).getURI();
+            var caminhoArquivo = new FileInputStream(uri.getPath());
             var jasperReport = JasperCompileManager.compileReport(caminhoArquivo);
             var fillReport = JasperFillManager.fillReport(jasperReport, parametros, jrBeanCollectionDataSource);
             return JasperExportManager.exportReportToPdf(fillReport);
