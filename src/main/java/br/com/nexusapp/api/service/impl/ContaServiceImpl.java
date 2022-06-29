@@ -1,13 +1,16 @@
 package br.com.nexusapp.api.service.impl;
 
 import br.com.nexusapp.api.dtos.*;
+import br.com.nexusapp.api.enums.ClienteStatus;
 import br.com.nexusapp.api.enums.ContaStatus;
 import br.com.nexusapp.api.enums.OperacaoEnum;
 import br.com.nexusapp.api.exception.BadRequestException;
 import br.com.nexusapp.api.exception.NotFoundException;
 import br.com.nexusapp.api.exception.ServiceUnavailableException;
+import br.com.nexusapp.api.model.Cliente;
 import br.com.nexusapp.api.model.Conta;
 import br.com.nexusapp.api.model.Extrato;
+import br.com.nexusapp.api.model.Usuario;
 import br.com.nexusapp.api.repository.ClienteRepository;
 import br.com.nexusapp.api.repository.ContaRepository;
 import br.com.nexusapp.api.repository.ExtratoRepository;
@@ -148,6 +151,23 @@ public class ContaServiceImpl implements IContaService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deletaContaById(Long id) {
+        Conta conta = repository.findByIdAndStatus(id, ContaStatus.ATIVO).orElseThrow(() -> {
+            throw new NotFoundException(ms.getMessage("conta.consulta.erro", null, LocaleContextHolder.getLocale()));
+        });
+
+        if (conta.getSaldo() > 0){
+            throw new BadRequestException(ms.getMessage("conta.deletar.erro", null, LocaleContextHolder.getLocale()));
+        }
+
+        Usuario usuario = usuarioRepository.buscarPorIdConta(conta.getId()).orElseThrow(() -> {
+            throw new NotFoundException(ms.getMessage("conta.consulta.erro", null, LocaleContextHolder.getLocale()));
+        });
+        encerrarContaCliente(conta);
+        usuarioRepository.delete(usuario);
+    }
+    @Override
     public List<ExtratoDTO> listarExtratos(Long idConta) {
         Conta conta = repository.findById(idConta).orElseThrow(() -> {
             throw new NotFoundException(ms.getMessage("conta.consulta.erro",
@@ -286,4 +306,18 @@ public class ContaServiceImpl implements IContaService {
             throw new ServiceUnavailableException(ex.getMessage());
         }
     }
+
+    private void encerrarContaCliente(Conta conta) {
+        Cliente cliente = conta.getCliente();
+
+        conta.setStatus(ContaStatus.INATIVO);
+        conta.setUpdatedAt(LocalDateTime.now());
+
+        cliente.setStatus(ClienteStatus.INATIVO);
+        cliente.setUpdatedAt(LocalDateTime.now());
+
+        repository.save(conta);
+        clienteRepository.save(cliente);
+    }
+
 }

@@ -114,4 +114,10 @@ public class ContaController {
         return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(arquivo);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        contaService.deletaContaById(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
