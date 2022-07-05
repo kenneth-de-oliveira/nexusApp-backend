@@ -7,6 +7,7 @@ import br.com.nexusapp.api.enums.OperacaoEnum;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Entity
@@ -58,7 +59,8 @@ public class Extrato implements Serializable {
 
 	@PrePersist
 	void persist() {
-		dataExtrato = LocalDateTime.now();
+		var zoneId = ZoneId.of("America/Sao_Paulo");
+		dataExtrato = LocalDateTime.now(zoneId);
 	}
 
 	public Long getId() {
