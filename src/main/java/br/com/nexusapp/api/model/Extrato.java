@@ -7,6 +7,7 @@ import br.com.nexusapp.api.enums.OperacaoEnum;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "tb_extrato")
@@ -44,13 +45,14 @@ public class Extrato implements Serializable {
 	}
 
 	public ExtratoDTO toDTO() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 		ExtratoDTO extratoDTO = new ExtratoDTO();
 		extratoDTO.setId(this.id);
-		extratoDTO.setDataExtrato(this.dataExtrato);
-		extratoDTO.setValor(this.valor);
+		extratoDTO.setDataExtrato(formatter.format(this.dataExtrato));
+		extratoDTO.setValor(String.valueOf(this.valor));
 		extratoDTO.setAgencia(this.agencia);
 		extratoDTO.setNumero(this.numero);
-		extratoDTO.setOperacao(this.operacao);
+		extratoDTO.setOperacao(this.operacao.toString());
 		return extratoDTO;
 	}
 

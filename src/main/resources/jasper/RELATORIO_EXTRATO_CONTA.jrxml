@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RELATORIO_EXTRATO_CONTA" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<style name="ZEBRADO">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean(($V{COLUMN_COUNT}.intValue() % 2) == 0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#DDDDDD"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="NEXUS_IMAGEM" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{NEXUS_IMAGEM}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="NOME" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{NOME}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="AGENCIA" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{AGENCIA}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="NUMERO" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{NUMERO}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="DOCUMENTO" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{DOCUMENTO}]]></defaultValueExpression>
+	</parameter>
+	<field name="numero" class="java.lang.String"/>
+	<field name="agencia" class="java.lang.String"/>
+	<field name="dataExtrato" class="java.lang.String"/>
+	<field name="operacao" class="java.lang.String"/>
+	<field name="valor" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="171" splitType="Stretch">
+			<image>
+				<reportElement x="259" y="5" width="55" height="36"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{NEXUS_IMAGEM}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement key="staticText-3" x="212" y="64" width="131" height="17"/>
+				<textElement textAlignment="Left">
+					<font size="12" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Sua liberdade financeira]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-2" x="198" y="47" width="159" height="17"/>
+				<textElement textAlignment="Left">
+					<font size="13" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Nexus Pagamentos LTDA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-4" x="0" y="149" width="555" height="22"/>
+				<textElement textAlignment="Center">
+					<font size="13" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Extrato da conta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-4" x="0" y="101" width="99" height="17"/>
+				<textElement>
+					<font size="11" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Titular da conta:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-4" x="0" y="117" width="99" height="17"/>
+				<textElement>
+					<font size="11" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Agência conta:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-4" x="0" y="133" width="99" height="17"/>
+				<textElement>
+					<font size="11" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Número conta:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-4" x="308" y="101" width="119" height="17"/>
+				<textElement>
+					<font size="11" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Documento do titular:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="98" y="101" width="211" height="17"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{NOME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="98" y="117" width="211" height="17"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{AGENCIA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="426" y="101" width="129" height="17"/>
+				<textElement textAlignment="Center">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{DOCUMENTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="98" y="133" width="211" height="17"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{NUMERO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="17" splitType="Stretch">
+			<staticText>
+				<reportElement key="staticText-6" mode="Opaque" x="0" y="0" width="99" height="17" backcolor="#CBE0EF"/>
+				<box>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Agência]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-7" mode="Opaque" x="99" y="0" width="141" height="17" backcolor="#CBE0EF"/>
+				<box>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Número da conta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-8" mode="Opaque" x="328" y="0" width="147" height="17" backcolor="#CBE0EF"/>
+				<box>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-9" mode="Opaque" x="475" y="0" width="80" height="17" backcolor="#CBE0EF"/>
+				<box>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Operação]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-10" mode="Opaque" x="240" y="0" width="88" height="17" backcolor="#CBE0EF"/>
+				<box>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement key="textField-2" style="ZEBRADO" stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="0" width="99" height="17"/>
+				<box>
+					<topPen lineWidth="0.25" lineStyle="Solid"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{agencia}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField-3" style="ZEBRADO" stretchType="RelativeToTallestObject" mode="Opaque" x="240" y="0" width="88" height="17"/>
+				<box>
+					<pen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[String.format("R$ %s", $F{valor})]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField-8" style="ZEBRADO" stretchType="RelativeToTallestObject" mode="Opaque" x="99" y="0" width="141" height="17"/>
+				<box>
+					<pen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{numero}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField-3" style="ZEBRADO" stretchType="RelativeToTallestObject" mode="Opaque" x="328" y="0" width="147" height="17"/>
+				<box>
+					<pen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{dataExtrato}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField-3" style="ZEBRADO" stretchType="RelativeToTallestObject" mode="Opaque" x="475" y="0" width="80" height="17"/>
+				<box>
+					<pen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{operacao}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17" splitType="Stretch">
+			<staticText>
+				<reportElement key="staticText-5" x="0" y="2" width="309" height="15"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Relatório de extrato da conta]]></text>
+			</staticText>
+			<line>
+				<reportElement key="line-1" x="0" y="1" width="555" height="1"/>
+			</line>
+			<elementGroup>
+				<textField evaluationTime="Page" isBlankWhenNull="false">
+					<reportElement key="textField-6" x="383" y="2" width="145" height="15"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Página "+$V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Report" isBlankWhenNull="false">
+					<reportElement key="textField-7" x="528" y="2" width="27" height="15"/>
+					<textElement textAlignment="Left"/>
+					<textFieldExpression class="java.lang.String"><![CDATA[" de "+$V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+			</elementGroup>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

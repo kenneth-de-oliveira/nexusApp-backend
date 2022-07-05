@@ -61,7 +61,7 @@ public class Cliente implements Serializable {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @NotNull
@@ -72,7 +72,6 @@ public class Cliente implements Serializable {
     void persist() {
         status = ClienteStatus.of(1);
         createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
     }
 
     public Long getId() {

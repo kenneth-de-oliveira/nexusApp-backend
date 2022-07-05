@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -53,5 +55,27 @@ public class EnderecoServiceImpl implements IEnderecoService {
         null, LocaleContextHolder.getLocale()));
         }
         return enderecoOpt.get().toDTO();
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public EnderecoDTO update(Long idCliente, EnderecoDTO enderecoDTO) {
+        Optional<Endereco> enderecoOpt = repository.findById(idCliente);
+        if (enderecoOpt.isEmpty()) {
+            throw new NotFoundException(ms.getMessage("endereco.consulta.erro",
+                    null, LocaleContextHolder.getLocale()));
+        }
+        return updatedAddress(enderecoOpt.get(), enderecoDTO);
+    }
+
+    private EnderecoDTO updatedAddress(Endereco enderecoOld, EnderecoDTO enderecoNewDTO) {
+        enderecoOld.setBairro(enderecoNewDTO.getBairro());
+        enderecoOld.setCep(enderecoNewDTO.getCep());
+        enderecoOld.setCidade(enderecoNewDTO.getCidade());
+        enderecoOld.setLogradouro(enderecoNewDTO.getLogradouro());
+        enderecoOld.setNumero(enderecoNewDTO.getNumero());
+        enderecoOld.setUf(enderecoNewDTO.getUf());
+        repository.save(enderecoOld);
+        return enderecoOld.toDTO();
     }
 }
