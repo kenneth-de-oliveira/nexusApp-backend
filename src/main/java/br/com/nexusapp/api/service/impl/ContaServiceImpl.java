@@ -6,7 +6,6 @@ import br.com.nexusapp.api.enums.ContaStatus;
 import br.com.nexusapp.api.enums.OperacaoEnum;
 import br.com.nexusapp.api.exception.BadRequestException;
 import br.com.nexusapp.api.exception.NotFoundException;
-import br.com.nexusapp.api.exception.ServiceUnavailableException;
 import br.com.nexusapp.api.model.Cliente;
 import br.com.nexusapp.api.model.Conta;
 import br.com.nexusapp.api.model.Extrato;
@@ -16,16 +15,9 @@ import br.com.nexusapp.api.repository.ContaRepository;
 import br.com.nexusapp.api.repository.ExtratoRepository;
 import br.com.nexusapp.api.repository.UsuarioRepository;
 import br.com.nexusapp.api.service.*;
-import br.com.nexusapp.api.util.JasperUtil;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,10 +25,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static br.com.nexusapp.api.enums.OperacaoEnum.DEPOSITO;
@@ -78,12 +70,12 @@ public class ContaServiceImpl implements IContaService {
         this.ms = ms;
     }
 
-    @Override
-    public byte[] extratoPdfConta(Long id) {
-        var extratos = this.listarExtratos(id);
-        var jrBeanCollectionDataSource = new JRBeanCollectionDataSource(extratos, false);
-        return gerarArquivoPdf(jrBeanCollectionDataSource, isContaAtiva(repository.findById(id)));
-    }
+//    @Override
+//    public byte[] extratoPdfConta(Long id) {
+//        var extratos = this.listarExtratos(id);
+//        var jrBeanCollectionDataSource = new JRBeanCollectionDataSource(extratos, false);
+//        return gerarArquivoPdf(jrBeanCollectionDataSource, isContaAtiva(repository.findById(id)));
+//    }
 
     @Override
     public ContaFullDTO consultarSaldo(String agencia, String numero) {
@@ -287,23 +279,23 @@ public class ContaServiceImpl implements IContaService {
 		extratoRepository.save(new Extrato(infoContaDTO, operacaoEnum));
     }
 
-    private byte[] gerarArquivoPdf(JRBeanCollectionDataSource jrBeanCollectionDataSource, ContaFullDTO contaFullDTO) {
-        try {
-            Map<String, Object> parametros = new HashMap<>();
-            parametros.put("NEXUS_IMAGEM", new ClassPathResource(JasperUtil.LOGO_APLICACAO).getURI().getPath());
-            parametros.put("NOME", contaFullDTO.getClienteDTO().getNome() + " " + contaFullDTO.getClienteDTO().getSobrenome());
-            parametros.put("AGENCIA", contaFullDTO.getAgencia());
-            parametros.put("NUMERO", contaFullDTO.getNumero());
-            parametros.put("DOCUMENTO", contaFullDTO.getClienteDTO().getDocumento());
-            var uri = new ClassPathResource(JasperUtil.ARQUIVO_RELATORIO_EXTRATO_CONTA).getURI();
-            var caminhoArquivo = new FileInputStream(uri.getPath());
-            var jasperReport = JasperCompileManager.compileReport(caminhoArquivo);
-            var fillReport = JasperFillManager.fillReport(jasperReport, parametros, jrBeanCollectionDataSource);
-            return JasperExportManager.exportReportToPdf(fillReport);
-        } catch (JRException | IOException ex) {
-            throw new ServiceUnavailableException(ex.getMessage());
-        }
-    }
+//    private byte[] gerarArquivoPdf(JRBeanCollectionDataSource jrBeanCollectionDataSource, ContaFullDTO contaFullDTO) {
+//        try {
+//            Map<String, Object> parametros = new HashMap<>();
+//            parametros.put("NEXUS_IMAGEM", new ClassPathResource(JasperUtil.LOGO_APLICACAO).getURI().getPath());
+//            parametros.put("NOME", contaFullDTO.getClienteDTO().getNome() + " " + contaFullDTO.getClienteDTO().getSobrenome());
+//            parametros.put("AGENCIA", contaFullDTO.getAgencia());
+//            parametros.put("NUMERO", contaFullDTO.getNumero());
+//            parametros.put("DOCUMENTO", contaFullDTO.getClienteDTO().getDocumento());
+//            var uri = new ClassPathResource(JasperUtil.ARQUIVO_RELATORIO_EXTRATO_CONTA).getURI();
+//            var caminhoArquivo = new FileInputStream(uri.getPath());
+//            var jasperReport = JasperCompileManager.compileReport(caminhoArquivo);
+//            var fillReport = JasperFillManager.fillReport(jasperReport, parametros, jrBeanCollectionDataSource);
+//            return JasperExportManager.exportReportToPdf(fillReport);
+//        } catch (JRException | IOException ex) {
+//            throw new ServiceUnavailableException(ex.getMessage());
+//        }
+//    }
 
     private void encerrarContaCliente(Conta conta) {
         Cliente cliente = conta.getCliente();

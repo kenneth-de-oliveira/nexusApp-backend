@@ -6,7 +6,6 @@ import br.com.nexusapp.api.dtos.InfoContaDTO;
 import br.com.nexusapp.api.dtos.InfoContaFullDTO;
 import br.com.nexusapp.api.service.IContaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -106,13 +105,13 @@ public class ContaController {
         return ResponseEntity.ok(extratoDTOS);
     }
 
-    @GetMapping(value = "/{id}/extratos/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<byte[]> extratoPdfConta(@PathVariable Long id) {
-        var arquivo = contaService.extratoPdfConta(id);
-        var headers = new HttpHeaders();
-        headers.add("Content-Disposition", "inline; filename=RELATORIO_EXTRATO_CONTA.pdf");
-        return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(arquivo);
-    }
+//    @GetMapping(value = "/{id}/extratos/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+//    public ResponseEntity<byte[]> extratoPdfConta(@PathVariable Long id) {
+//        var arquivo = contaService.extratoPdfConta(id);
+//        var headers = new HttpHeaders();
+//        headers.add("Content-Disposition", "inline; filename=RELATORIO_EXTRATO_CONTA.pdf");
+//        return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(arquivo);
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
