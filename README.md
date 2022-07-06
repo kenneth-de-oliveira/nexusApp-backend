@@ -58,6 +58,10 @@ Create a new account **POST**: localhost:8080/contas/cadastrar
             "cidade": "João Pessoa",
             "cep": "58045120",
             "uf": "PB"
+        },
+        "usuarioDTO": {
+            "username": "joaoAlex",
+            "password": "1234"
         }
     }
 }
