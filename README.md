@@ -42,7 +42,7 @@ Project configuration
 
 **EXAMPLES OF EXECUTION**
 
-Create a new account **POST**: localhost:8080/contas/cadastrar
+Create a new account **POST**: localhost:8080/publico/contas
 ```json
 {
     "clienteDTO": {
